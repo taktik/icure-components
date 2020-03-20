@@ -1,11 +1,10 @@
 # iCure Web reference implementation
 
 
-This polymer app is a starting point for building apps using a iCure backend
+This polymer app is a reference implementation that uses icure components to build an EHR solution
 
 ```
 npm install
-bower install
 npm run serve
 ```
 
