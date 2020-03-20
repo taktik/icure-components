@@ -845,17 +845,16 @@ export class ProseEditor extends PolymerElement {
             const subNode = reverseSubNodes[0];
             const start = page.offset + 1 + subNode.offset
 
-            let tr = state.tr
+			//let tr = state.tr
+			let tr = view.state.tr
             const nextPage = state.doc.nodeAt(page.offset + page.node.nodeSize)
             if (!nextPage) {
               tr = tr.insert(page.offset + page.node.nodeSize, page.node.type.create({id: (page.node.attrs.id || 0) + 1}))
             }
-            tr.insert(page.offset + page.node.nodeSize + 1, subNode.node).delete(start, start + subNode.node.nodeSize)
-
-            const pos = tr.doc.resolve(tr.steps[tr.steps.length - 1].getMap().map(page.offset + page.node.nodeSize + 1 + subNode.node.nodeSize))
+			tr.insert(page.offset + page.node.nodeSize + 1, subNode.node).delete(start, start + subNode.node.nodeSize)
+            //const pos = tr.doc.resolve(tr.steps[tr.steps.length - 1].getMap().map(page.offset + page.node.nodeSize + 1 + subNode.node.nodeSize))
             //tr.setSelection(new TextSelection(pos, pos))
-
-            view.dispatch(tr.scrollIntoView());
+			view.dispatch(tr.scrollIntoView());
           }
         }
       }
@@ -1015,7 +1014,8 @@ export class ProseEditor extends PolymerElement {
           'Mod-Shift-k' : this.clearMarks()
         })),
         selectionTrackingPlugin,
-        paginationPlugin,
+		// LDE: disabling paginationPlugin because a node bigger than one single page generates infinite loop
+	    //paginationPlugin,
         paragraphPlugin,
         templateTrackerPlugin
       ]

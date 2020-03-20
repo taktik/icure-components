@@ -1,0 +1,420 @@
+{
+  "hospitalServiceList": [
+    {
+      "code": "002",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Prestations effectuées à des patients hospitalisés dans un autre établissement",
+        "en": "Services provided to patients hospitalized in another institution",
+        "nl": ""
+      }
+    },
+    {
+      "code": "190",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Section des soins néonatals non-intensifs",
+        "en": "Non-intensive neonatal care section",
+        "nl": ""
+      }
+    },
+    {
+      "code": "200",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de traitement de la TBC",
+        "en": "TBC treatment service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "210",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de diagnostic et de traitement chirurgical",
+        "en": "",
+        "nl": ""
+      }
+    },
+    {
+      "code": "220",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de diagnostic et de traitement médical",
+        "en": "Diagnosis and medical treatment service",
+        "Diagnostic and surgical treatment servicenl": ""
+      }
+    },
+    {
+      "code": "230",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de pédiatrie",
+        "en": "Pediatric ward",
+        "nl": ""
+      }
+    },
+    {
+      "code": "240",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service d'hospitalisation simple",
+        "en": "Simple hospitalization service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "250",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service des maladies contagieuses",
+        "en": "Contagious diseases service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "260",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de maternité",
+        "en": "Maternity service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "270",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de soins néonatals intensifs",
+        "en": "Intensive neonatal care service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "290",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Unité de traitement de grands brûlés",
+        "en": "Burn Unit",
+        "nl": ""
+      }
+    },
+    {
+      "code": "300",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service de gériatrie et revalidation",
+        "en": "Geriatric service and revalidation",
+        "nl": ""
+      }
+    },
+    {
+      "code": "320",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Hôpital chirurgical de jour",
+        "en": "Surgical day hospital",
+        "nl": ""
+      }
+    },
+    {
+      "code": "340",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Service de neuropsychiatrie infantile",
+        "en": "Child neuropsychiatry service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "350",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Hospitalisation de jour en service K",
+        "en": "Day hospitalization in K service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "360",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Hospitalisation de nuit en service K",
+        "en": "Night hospitalization in K service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "370",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Service neuropsychiatrique",
+        "en": "Neuropsychiatric service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "380",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Hospitalisation de jour en service A",
+        "en": "Day hospitalization in service A",
+        "nl": ""
+      }
+    },
+    {
+      "code": "390",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Hospitalisation de nuit en service A",
+        "en": "Night hospitalization in service A",
+        "nl": ""
+      }
+    },
+    {
+      "code": "410",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Service psychiatrique",
+        "en": "Psychiatric service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "420",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Hospitalisation de jour en service T",
+        "en": "Day hospitalization in service T",
+        "nl": ""
+      }
+    },
+    {
+      "code": "430",
+      "type": {
+        "fr": "Gén./Psy.",
+        "en": "Gen./Psy.",
+        "nl": "Gen./Psy."
+      },
+      "description": {
+        "fr": "Hospitalisation de nuit en service T",
+        "en": "Night hospitalization in service T",
+        "nl": ""
+      }
+    },
+    {
+      "code": "440",
+      "type": {
+        "fr": "Psy.",
+        "en": "Psy.",
+        "nl": "Psy."
+      },
+      "description": {
+        "fr": "Placement familial Tf dans un hôpital ",
+        "en": "Tf family placement in a hospital",
+        "nl": ""
+      }
+    },
+    {
+      "code": "450",
+      "type": {
+        "fr": "Psy.",
+        "en": "Psy.",
+        "nl": "Psy."
+      },
+      "description": {
+        "fr": "Placement familial Tp dans une famille ",
+        "en": "Family placement Tp in a family",
+        "nl": ""
+      }
+    },
+    {
+      "code": "480",
+      "type": {
+        "fr": "Psy.",
+        "en": "Psy.",
+        "nl": "Psy."
+      },
+      "description": {
+        "fr": "Service de traitement intensif des patients psychiatriques",
+        "en": "Intensive treatment service for psychiatric patients",
+        "nl": ""
+      }
+    },
+    {
+      "code": "490",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Fonction ou service de soins intensifs",
+        "en": "Intensive care function or service",
+        "nl": ""
+      }
+    },
+    {
+      "code": "610",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service spécialisé pour le traitement et la réadaptation fonctionnelle d'affections cardio-pulmonaires",
+        "en": "Specialized service for the treatment and functional rehabilitation of cardiopulmonary diseases",
+        "nl": ""
+      }
+    },
+    {
+      "code": "620",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service spécialisé pour le traitement et la réadaptation fonctionnelle d'affections locomotrices",
+        "en": "Specialized service for the treatment and functional rehabilitation of locomotor diseases",
+        "nl": ""
+      }
+    },
+    {
+      "code": "630",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service spécialisé pour le traitement et la réadaptation fonctionnelle d'affections neurologiques",
+        "en": "Specialized service for the treatment and functional rehabilitation of neurological conditions",
+        "nl": ""
+      }
+    },
+    {
+      "code": "640",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service spécialisé pour le traitement et la réadaptation fonctionnelle d’affections chroniques nécessitant des soins palliatifs",
+        "en": "Specialized service for the treatment and functional rehabilitation of chronic conditions requiring palliative care",
+        "nl": ""
+      }
+    },
+    {
+      "code": "650",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service spécialisé pour le traitement et la réadaptation fonctionnelle de polypathologies chroniques nécessitant des soins médicaux prolongés",
+        "en": "Specialized service for the treatment and functional rehabilitation of chronic polypathologies requiring prolonged medical care",
+        "nl": ""
+      }
+    },
+    {
+      "code": "660",
+      "type": {
+        "fr": "Gén.",
+        "en": "Gen.",
+        "nl": "Gen."
+      },
+      "description": {
+        "fr": "Service spécialisé pour le traitement et la réadaptation fonctionnelle d’affections psychogériatriques",
+        "en": "Specialized service for the treatment and functional rehabilitation of psychogeriatric conditions",
+        "nl": ""
+      }
+    }
+  ]
+}

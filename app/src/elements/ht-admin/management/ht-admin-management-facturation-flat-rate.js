@@ -50,7 +50,7 @@ class HtAdminManagementFacturationFlatRate extends TkLocalizerMixin(PolymerEleme
             }
 
             #addedFlatRateTarificationDialog{
-                height: 280px;
+                height: 380px;
                 width: 600px;
             }
 
@@ -199,14 +199,19 @@ class HtAdminManagementFacturationFlatRate extends TkLocalizerMixin(PolymerEleme
         <paper-dialog id="addedFlatRateTarificationDialog">
             <h2 class="modal-title">[[localize('add_flat_rat_tar', 'Add flat rate tarification', language)]]</h2>
             <div class="content">
-                <div class="line">
-                    <paper-dropdown-menu class="flex" label="[[localize('stat','Code',language)]]">
-                        <paper-listbox slot="dropdown-content" selected="{{flatRateNmclSelectedItemIdx}}" selected-item="{{flatRateNmclSelectedItem}}" attr-for-selected="id" on-selected-changed="_fatRateNmclChanged">
-                            <template is="dom-repeat" items="[[flatRateNmcl]]" as="nmcl">
-                                <paper-item id="[[nmcl.code]]">[[nmcl.code]] - [[_getCodeLabel(nmcl.label)]]</paper-item>
-                            </template>
-                        </paper-listbox>
-                    </paper-dropdown-menu>
+                <div class="line p8">
+<!--                    <paper-dropdown-menu label="[[localize('stat','Code',language)]]">-->
+<!--                        <paper-listbox slot="dropdown-content" selected="{{flatRateNmclSelectedItemIdx}}" selected-item="{{flatRateNmclSelectedItem}}" attr-for-selected="id" on-selected-changed="_fatRateNmclChanged">-->
+<!--                            <template is="dom-repeat" items="[[flatRateNmcl]]" as="nmcl">-->
+<!--                                <paper-item id="[[nmcl.code]]">[[nmcl.code]] - [[_getCodeLabel(nmcl.label)]]</paper-item>-->
+<!--                            </template>-->
+<!--                        </paper-listbox>-->
+<!--                    </paper-dropdown-menu>-->
+                    <paper-radio-group selected-item="{{flatRateNmclSelectedItem}}" attr-for-selected="id" on-selected-changed="_fatRateNmclChanged">
+                        <template is="dom-repeat" items="[[flatRateNmcl]]" as="nmcl">
+                            <paper-radio-button id="[[nmcl.code]]">[[nmcl.code]] - [[_getCodeLabel(nmcl.label)]]</paper-radio-button>
+                        </template>
+                    </paper-radio-group>
                 </div>
                 <div class="line">
                     <div class="exportMonthPicker">

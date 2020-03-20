@@ -552,6 +552,28 @@ class HtMain extends TkLocalizerMixin(PolymerElement) {
 				z-index: 10;
 				text-align: center;
 			}
+			
+			
+			#updateDialog {
+                width: 50%;
+                height: 50%;
+            }
+
+            .content {
+                padding: 24px;
+            }
+            
+            a {
+                color: var(--app-secondary-color);
+                padding: 0 4px;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: 400;
+            }
+
+            a:hover {
+                background: rgba(255, 80, 0, .2);
+            }
 		</style>
 
 		<ht-auto-read-eid-opening id="autoRead" language="[[language]]" resources="[[resources]]" card="[[cardData]]" api="[[api]]" user="[[user]]"></ht-auto-read-eid-opening>
@@ -731,7 +753,7 @@ class HtMain extends TkLocalizerMixin(PolymerElement) {
 					</div>
 				</template>
 				<template is="dom-if" if="[[_isEqual(widget.id,'widgetUpdatesHistory')]]">
-					<widget-updates-history id="[[widget.id]]" language="[[language]]" resources="[[resources]]" class="card" on-dragstart="_dragWidgetStart" on-dragover="_dragWidgetOver" on-dragenter="_dragWidgetEnter" on-dragleave="_dragWidgetLeave" on-dragend="_dragWidgetEnd" on-drop="_dropWidget" style="--area:[[widget.id]];"></widget-updates-history>
+					<widget-updates-history id="[[widget.id]]" language="[[language]]" resources="[[resources]]" class="card" on-dragstart="_dragWidgetStart" on-dragover="_dragWidgetOver" on-dragenter="_dragWidgetEnter" on-dragleave="_dragWidgetLeave" on-dragend="_dragWidgetEnd" on-drop="_dropWidget" style="--area:[[widget.id]];" on-update-selected="updateSelected"></widget-updates-history>
 				</template>
 			</template>
 		</div>
@@ -769,6 +791,44 @@ class HtMain extends TkLocalizerMixin(PolymerElement) {
 				<paper-button class="button button--save" on-tap="saveSelectedLayout" dialog-dismiss="">[[localize('save','Save',language)]]</paper-button>
 			</div>
 		</paper-dialog>
+		
+		<!--todo changed var and make event in widget-update-history-->
+        <paper-dialog id="updateDialog">
+            <h2 class="modal-title">[[selectedUpdate.mainTitle]]<label class="update-date"><span>[[selectedUpdate.updateDate]]</span></label></h2>
+            <div class="content">
+                <template is="dom-if" if="[[_isNews(selectedUpdate)]]">
+                    <div class="newsContent">
+                        <template is="dom-repeat" items="[[selectedUpdate.modules]]" as="module">
+                            <div inner-h-t-m-l="[[_localizeContent(module.description)]]"></div>
+                        </template>
+                    </div>
+                </template>
+                <template is="dom-if" if="[[_isUpdate(selectedUpdate)]]">
+                    UPDATE
+                    <div class="blockUpdate">
+                        <div class="versionTitle bold">
+                            Version: [[selectedUpdate.version]]
+                        </div>
+                        <ol>
+                            <template is="dom-repeat" items="[[selectedUpdate.modules]]" as="module">
+                                <li>
+                                    <span class="releaseNoteTitle">[[_localizeContent(module.areaCode)]] - [[_localizeContent(module.title)]]</span>
+                                    [[_localizeContent(module.description)]]
+                                </li>
+                            </template>
+                        </ol>
+                        <template is="dom-if" if="_isLink(selectedUpdate)">
+                            <div>
+                                Plus d'infos, cliquez <a href="[[selectedUpdate.mainLink]]" target="_blank"> ici</a>.
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+            <div class="buttons">
+                <paper-button class="button" dialog-dismiss="">Close</paper-button>
+            </div>
+        </paper-dialog>
 `;
   }
 
@@ -889,6 +949,9 @@ class HtMain extends TkLocalizerMixin(PolymerElement) {
           _isLoadingLatestPatients:{
               type : Boolean,
               value : false
+          },
+          selectedUpdate:{
+              type: Object
           }
       };
 	}
@@ -985,7 +1048,7 @@ class HtMain extends TkLocalizerMixin(PolymerElement) {
 
           this._updateLabResults()
 
-          this.api && this.api.bemikrono() && this.api.bemikrono().appointmentsByDate(parseInt(moment().format('YYYYMMDD'))).then(appointments => {
+          this.api && this.api.bemikrono().appointmentsByDate(parseInt(moment().format('YYYYMMDD'))).then(appointments => {
               return appointments && this.api.patient().getPatientsWithUser(this.user, new models.ListOfIdsDto({ ids: appointments.map(a => a.patientId) })).then(patients => {
                   //todo wtf JSON not valid
                   patients.forEach((p, idx) => appointments[idx].patient = p);
@@ -1295,6 +1358,27 @@ class HtMain extends TkLocalizerMixin(PolymerElement) {
 
       this.updateGrid()
 	}
+
+    updateSelected(e){
+        this.set('selectedUpdate', e.detail)
+        this.$['updateDialog'].open()
+    }
+
+    _isNews(update){
+        return update && update.mainType && update.mainType === "News" ? true : false
+    }
+
+    _localizeContent(content){
+        return content && content[this.language] ? content[this.language] : null
+    }
+
+    _isUpdate(update){
+        return update && update.mainType && update.mainType === "Update" ? true : false
+    }
+
+    _isLink(update){
+        return update && update.mainLink ? true : false
+    }
 
   widgetsChanged(e){
 
@@ -1642,7 +1726,6 @@ class GridLayout {
         return { layout, gridCol, gridRow, templateArea }
 
     }
-
 }
 
 const WIDGETSA = [

@@ -638,6 +638,7 @@ class HtPatConsentDetail extends TkLocalizerMixin(mixinBehaviors([IronResizableB
             <div class="eid-content-dialog">
                 <div class="eid-title">
                     Introduction des données EID / ISI +
+                    <paper-icon-button icon="vaadin:health-card" id="read-eid" class="eid" on-tap="_readEid"></paper-icon-button>
                 </div>
                 <div class="content-dialog">
                     <paper-input id="idCardNo" always-float-label="" label="[[localize('eid_no','eID Card Number',language)]]" value="{{eidCardNumber}}"></paper-input>

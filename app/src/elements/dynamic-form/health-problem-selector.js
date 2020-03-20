@@ -244,6 +244,10 @@ class HealthProblemSelector extends TkLocalizerMixin(PolymerElement) {
 					<tk-token-field value="{{entity.plansOfAction}}" data-value-path="id" data-label-path="descr" no-label-float=""></tk-token-field>
 				</div>
 
+				<div class="grid">
+					<div class="label">[[localize('note','Note',language)]]</div>
+					<vaadin-text-area style="width: 100%" class="textarea-style" value="{{entity.note}}"></vaadin-text-area>
+				</div>
 
 				<slot name="suffix"></slot>
 			</div>

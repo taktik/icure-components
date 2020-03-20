@@ -1463,6 +1463,7 @@ class HtMsgDetail extends TkLocalizerMixin(PolymerElement) {
                                     <div class="clear"></div>
 
                                     <div class="fl50"><vaadin-date-picker label="[[localize('birthDate','Date of birth',language)]]" i18n="[[i18n]]" value="{{newPat.birthDate}}" id="newPat_birthDate" can-be-fuzzy auto-validate="" required=""></vaadin-date-picker></div>
+                                    <!-- 20191210 - Murielle Mernier - Niss should not be validated anymore -->
                                     <!--<div class="fr50"><ht-ssin-validator validator-name="ht-ssin-validator"></ht-ssin-validator><paper-input label="[[localize('ssinPatVerbose','National identification number',language)]]" auto-validate required validator="ht-ssin-validator" value="{{newPat.ssin}}" id="newPat_ssin"></paper-input></div>-->
                                     <div class="fr50"><paper-input label="[[localize('ssinPatVerbose','National identification number',language)]]" value="{{newPat.ssin}}" id="newPat_ssin"></paper-input></div>
                                     <div class="clear"></div>
@@ -2448,6 +2449,9 @@ class HtMsgDetail extends TkLocalizerMixin(PolymerElement) {
       const documentId = _.trim(_.get(e,"documentId",""))
       const documentType = _.trim(_.get(this,"newPat.documentType","labresult"))
       const documentTypeLabel = _.get(_.find(this._transactionCodes, {code:documentType}), "name", "Analyse")
+
+      // const fieldsToValidate = _.keys(this.newPat)
+      // 20191210 - Murielle Mernier - Niss should not be validated anymore
 
       const fieldsToValidate = _.keys(this.newPat)
       const fieldsValidation = _.compact(_.map( fieldsToValidate, k => { const fieldToValidate = this.shadowRoot.querySelector('#newPat_' + k); return (fieldToValidate && typeof _.get(fieldToValidate, "validate", false) === "function" && fieldToValidate.validate()); }))

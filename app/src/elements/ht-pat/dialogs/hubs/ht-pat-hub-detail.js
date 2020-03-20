@@ -874,7 +874,9 @@ class HtPatHubDetail extends TkLocalizerMixin(mixinBehaviors([IronResizableBehav
 
   addSearchField(){
       this.hubTransactionList.forEach(tr => tr.searchField = this._transactionType(tr).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-      + "|" + this._transactionCDHcParties(tr, 'hub').map(hcp => this._localizeHcpType(hcp)).join("|").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+          + "|" + this._transactionCDHcParties(tr, 'hub').map(hcp => this._localizeHcpType(hcp)).join("|").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+          + "|" + tr.authorsList.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+      )
 
       //_localizeHcpType
   }
@@ -1587,16 +1589,18 @@ class HtPatHubDetail extends TkLocalizerMixin(mixinBehaviors([IronResizableBehav
                                   }
                               }
                           }))
-                          this.set('listOfAuthor', _.orderBy(_.uniqBy(_.flatten(tranResp.map(tr => _.get(tr, 'author', [])).map(auth => _.get(auth, 'hcparties', []))).map(hcp => {
-                                  return {
+                          this.set('listOfDocumentCategory', _.orderBy(_.get(this, 'listOfDocumentCategory', []), ['label.'+this.language], ["asc"]))
+                          this.set('listOfAuthor', _.uniqBy(_.flatten(tranResp.map(tr => _.get(tr, 'author', [])).map(auth => _.get(auth, 'hcparties', []))).map(hcp => {
+                              return {
                                       id: _.get(_.get(hcp, 'ids', []).find(id => _.get(id, 's', null) === "ID-HCPARTY"), 'value', null) || _.get(_.get(hcp, 'ids', []).find(id => _.get(id, 's', null) === "INSS"), 'value', null) || _.get(_.get(hcp, 'ids', []).find(id => _.get(id, 's', null) === "LOCAL"), 'value', null),
                                       name: _.get(hcp, "name", null),
                                       firstName: _.get(hcp, "firstname", null),
                                       familyName: _.get(hcp, "familyname", null),
                                       nameHr: _.trim(_.get(hcp, "name", null))+" "+_.trim(_.get(hcp, "firstname", null))+" "+_.trim(_.get(hcp, "familyname", null))
                                   }
-                          }), "id"), ["nameHr"], ["asc"]))
-                          this.set('listOfDocumentType', _.orderBy(_.compact(_.uniqBy(tranResp.map(tr => {
+                          }), "id"))
+                          this.set('listOfAuthor', _.orderBy(_.get(this, 'listOfAuthor', []), ["nameHr"], ["asc"]))
+                          this.set('listOfDocumentType', _.compact(_.uniqBy(tranResp.map(tr => {
                               return {
                                   code: _.get(tr, 'desc', null),
                                   label: {
@@ -1606,7 +1610,8 @@ class HtPatHubDetail extends TkLocalizerMixin(mixinBehaviors([IronResizableBehav
                                   }
                               }
 
-                          }), 'code')), ["code"], ["asc"]))
+                          }), 'code')))
+                          this.set('listOfDocumentType', _.orderBy(_.get(this, 'listOfDocumentType', []), ["label."+this.language], ["asc"]))
                           this._getDiaryNote();
                           return tranResp;
                       } else {

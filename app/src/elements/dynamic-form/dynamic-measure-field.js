@@ -161,6 +161,11 @@ class DynamicMeasureField extends TkLocalizerMixin(PolymerElement) {
           valueWithUnit: {
               type: Object,
               notify: true,
+              observer: '_valueWithUnitChanged'
+          },
+          value : {
+              type: String,
+              notify: true,
               observer: '_valueChanged'
           },
           inputValue: {
@@ -169,7 +174,8 @@ class DynamicMeasureField extends TkLocalizerMixin(PolymerElement) {
           },
           unit:{
               type: String,
-              value:""
+              notify: true,
+              observer: '_unitChanged'
           },
           width: {
               type: Number,
@@ -188,19 +194,28 @@ class DynamicMeasureField extends TkLocalizerMixin(PolymerElement) {
 	}
 
   _valueChanged(value) {
-      const normalizedInputValue = this.valueWithUnit ? (this.valueWithUnit.value != null ? this.valueWithUnit.value : '') : ""
-      const unitInputValue = this.valueWithUnit ? (this.valueWithUnit.unit ? this.valueWithUnit.unit : '') : ""
-      if ((this.inputValue || '').trim() !== normalizedInputValue) {
-          this.set('inputValue', normalizedInputValue);
+      if ((this.inputValue || '').trim() !== value) {
+          this.set('inputValue', value);
       }
-      if((this.unit || "").trim() !== unitInputValue){
-          this.set("unit",unitInputValue)
-      }
-	}
+  }
+   _unitChanged(unit){
+      if(unit!== this.valueWithUnit.unit){
+          if(!this.readOnly) {
+              this.dispatchEvent(new CustomEvent('field-changed', {
+                  detail: {
+                      context: this.context,
+                      value: this.inputValue,
+                      unit : this.unit
+                  }
+              }));
+          }
+        }
+    }
 
-  _inputValueChanged(value) {
-      if(value!== this.valueWithUnit.value){
-          this.set('valueWithUnit.value',value)
+
+    _inputValueChanged(value) {
+      if(value!== this.valueWithUnit.value || value!==this.value){
+          value !== this.value && this.set('value',value)
           if(!this.readOnly) {
               this.dispatchEvent(new CustomEvent('field-changed', {
                   detail: {

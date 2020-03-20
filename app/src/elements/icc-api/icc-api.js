@@ -1,6 +1,7 @@
 import '../fhc-api/fhc-api.js';
 import * as api from 'icc-api/dist/icc-api/iccApi'
 import moment from 'moment'
+import _ from 'lodash/lodash';
 
 import {IccBedrugsXApi} from 'icc-api/dist/icc-x-api/icc-bedrugs-x-api'
 import {IccBekmehrXApi} from 'icc-api/dist/icc-x-api/icc-bekmehr-x-api'
@@ -35,25 +36,22 @@ class IccApi extends PolymerElement {
       return {
           headers: {
               type: Object,
-              value: {"Content-Type": "application/json"},
+              value: {"Content-Type": "application/json", "Authorization": "Basic: ZGU5ODcyYjUtNWNiMC00ODQ2LThjNGMtOThhMjFhYmViNWUzOlQwcEB6RmhjWnRm"},
               notify: true
           },
           headers30s: {
               type: Object,
-              value: {"Content-Type": "application/json",
-              "X-CLIENT-SIDE-TIMEOUT":"30000"},
+              value: {"Content-Type": "application/json", "X-CLIENT-SIDE-TIMEOUT":"30000", "Authorization": "Basic: ZGU5ODcyYjUtNWNiMC00ODQ2LThjNGMtOThhMjFhYmViNWUzOlQwcEB6RmhjWnRm"},
               notify: true
           },
           headers60s: {
               type: Object,
-              value: {"Content-Type": "application/json",
-                  "X-CLIENT-SIDE-TIMEOUT":"60000"},
+              value: {"Content-Type": "application/json", "X-CLIENT-SIDE-TIMEOUT":"60000", "Authorization": "Basic: ZGU5ODcyYjUtNWNiMC00ODQ2LThjNGMtOThhMjFhYmViNWUzOlQwcEB6RmhjWnRm"},
               notify: true
           },
           headers120s: {
               type: Object,
-              value: {"Content-Type": "application/json",
-                  "X-CLIENT-SIDE-TIMEOUT":"120000"},
+              value: {"Content-Type": "application/json", "X-CLIENT-SIDE-TIMEOUT":"120000", "Authorization": "Basic: ZGU5ODcyYjUtNWNiMC00ODQ2LThjNGMtOThhMjFhYmViNWUzOlQwcEB6RmhjWnRm"},
               notify: true
           },
           host: {
@@ -109,6 +107,10 @@ class IccApi extends PolymerElement {
           tmpLogging:{
               type:Boolean,
               value:false
+          },
+          electronHost: {
+              type: String,
+              value: "http://127.0.0.1:16042"
           }
       }
   }
@@ -172,6 +174,8 @@ class IccApi extends PolymerElement {
       this.messageicc = new IccMessageXApi(this.host, this.headers120s, this.cryptoicc, this.insuranceicc, this.entityreficc, this.invoiceicc, this.documenticc, this.receipticc, this.patienticc)
       this.bekmehricc = new IccBekmehrXApi(this.host, this.headers, this.authicc,this.contacticc, this.helementicc)
       this.accesslogicc = new IccAccesslogXApi(this.host, this.headers, this.cryptoicc)
+
+            this.medexicc = new api.iccMedexApi(this.host, this.headers)
 
 
       const toObserve = [
@@ -369,6 +373,10 @@ class IccApi extends PolymerElement {
 
   calendaritem(){
       return this.calendaritemicc
+  }
+
+  medex(){
+      return this.medexicc
   }
 
   calendaritemtype(){
@@ -687,7 +695,7 @@ class IccApi extends PolymerElement {
           const optionsString = _.toPairs(options).map(([k, v]) => `${k}=${v}`).join('&')
           if(!optionsString.length) option.type="doc-big-format"
 
-          return (!electron || !type ? Promise.resolve(electron) : fetch('http://localhost:16042/getPrinterSetting', {
+          return (!electron || !type ? Promise.resolve(electron) : fetch(`${_.get(this,"electronHost","http://127.0.0.1:16042")}/getPrinterSetting`, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json; charset=utf-8"
@@ -711,7 +719,7 @@ class IccApi extends PolymerElement {
 
                   return (printerName ? Promise.resolve(printerName) : this.printers().then(printers => printers.find(p => p.isDefault)).then(p => p && p.name))
                       .then(printerName =>
-                          fetch(`${electron && type && printerName ? 'http://127.0.0.1:16042/print/' + encodeURIComponent(printerName) : 'https://report.icure.cloud/pdf'}${optionsString && optionsString.length ? `?${optionsString}` : ''}`, {
+                          fetch(`${electron && type && printerName ? _.get(this,"electronHost","http://127.0.0.1:16042") + '/print/' + encodeURIComponent(printerName) : 'https://report.icure.cloud/pdf'}${optionsString && optionsString.length ? `?${optionsString}` : ''}`, {
                               method: "POST",
                               mode: "cors", // no-cors, cors, *same-origin
                               credentials: "same-origin", // include, same-origin, *omit
@@ -730,7 +738,7 @@ class IccApi extends PolymerElement {
 
   printers() {
       return this.isElectronAvailable().then(electron =>
-          electron && fetch('http://127.0.0.1:16042/printers', { method: "GET" })
+          electron && fetch(`${_.get(this,"electronHost","http://127.0.0.1:16042")}/printers`, { method: "GET" })
               .then(response => response.json()) || []
       )
   }
@@ -944,7 +952,7 @@ class IccApi extends PolymerElement {
   }
 
   isElectronAvailable() {
-      return fetch(`http://127.0.0.1:16042/ok`, {
+      return fetch('http://127.0.0.1:16042/ok', {
           method: "GET"
       })
           .then(() => true)
@@ -1144,6 +1152,10 @@ class IccApi extends PolymerElement {
 
   setPreventLogging(status=true){
       this.set("preventLogging",status)
+  }
+
+  _isValidMail(email){
+      return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,20})+$/.test(email))
   }
 }
 

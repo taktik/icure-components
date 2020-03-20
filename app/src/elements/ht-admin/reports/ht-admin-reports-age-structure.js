@@ -60,6 +60,11 @@ class HtAdminReportsAgeStructure extends TkLocalizerMixin(PolymerElement) {
                 height: 42px;
             }
 
+            .options {
+                display: flex;
+                flex-flow: row nowrap;
+            }
+
             .chart-container {
                 position: relative;
                 height: calc(100% - 105px);
@@ -73,14 +78,15 @@ class HtAdminReportsAgeStructure extends TkLocalizerMixin(PolymerElement) {
                 <ht-spinner active="[[isLoading]]"></ht-spinner>
             </div>
             <div style="height: 100%">
-                <div>
-                    <vaadin-checkbox id="active" checked="[[active]]" on-checked-changed="_activeChanged">[[localize('ags_active','Uniquement les patients actifs',language)]]</vaadin-checkbox>
+                <div class="options">
+                    <vaadin-checkbox id="active" checked="[[active]]" on-checked-changed="_activeChanged">[[localize('ags_active','ags_active',language)]]</vaadin-checkbox>
+                    <vaadin-checkbox id="pyramid" checked="[[pyramid]]" on-checked-changed="_pyramidChanged">[[localize('ags_pyramid','ags_pyramid',language)]]</vaadin-checkbox>
                 </div>
                 <div class="chart-container">
                     <canvas id="chart"></canvas>
                 </div>
-                <div>
-                    <paper-button on-tap="_print" icon="print" class="button button--save export-btn">[[localize('pri','Print',language)]]</paper-button>
+                <div style="width: fit-content">
+                    <paper-button on-tap="_print" class="button button--save"><iron-icon icon="vaadin:print" class="mr5 smallIcon"></iron-icon>[[localize('print','Print',language)]]</paper-button>
                 </div>
             </div>
         </div>
@@ -105,10 +111,14 @@ class HtAdminReportsAgeStructure extends TkLocalizerMixin(PolymerElement) {
               type: Boolean,
               value: true
           },
+          pyramid: {
+              type: Boolean,
+              value: true
+          },
           isLoading: {
               type: Boolean,
               value: false
-          },
+          }
       }
   }
 
@@ -135,6 +145,11 @@ class HtAdminReportsAgeStructure extends TkLocalizerMixin(PolymerElement) {
 
   _activeChanged(e) {
       this.set("active", e.detail.value);
+      this._initializeChart();
+  }
+
+  _pyramidChanged(e) {
+      this.set("pyramid", e.detail.value);
       this._initializeChart();
   }
 
@@ -181,7 +196,8 @@ class HtAdminReportsAgeStructure extends TkLocalizerMixin(PolymerElement) {
       });
 
       let start = 0
-      while (start < values.length && values[start].male < 1 && values[start].female < 1) start++;
+      while (start < values.length && values[start].male < 1 && values[start].female < 1 && !this.pyramid) start++;
+
       let end = values.length -1;
       while (end > start && values[end].male < 1 && values[end].female < 1) end--;
       values = values.slice(start, end);
@@ -189,33 +205,35 @@ class HtAdminReportsAgeStructure extends TkLocalizerMixin(PolymerElement) {
       if (this.chart)
           this.chart.destroy();
 
-      this.chart = new Chart(this.$['chart'], {
-          type: 'bar',
-          data: {
-              labels: values.map(x => x.index * 5),
-              datasets: [{
-                  label: this.localize('gender_male', 'Male', this.language),
-                  fillColor: "transparent",
-                  data: values.map(x => x.male),
-                  lineTension: 0.1,
-                  backgroundColor: "rgba(28,101,254,0.2)",
-                  borderColor: "rgb(28,101,254)"
+      if(!this.pyramid){
+          this.chart = new Chart(this.$['chart'], {
+              type: 'bar',
+              data: {
+                  labels: values.map(x => x.index * 5),
+                  datasets: [{
+                      label: this.localize('gender_male', 'Male', this.language),
+                      fillColor: "transparent",
+                      data: values.map(x => x.male),
+                      lineTension: 0.1,
+                      backgroundColor: "rgba(28,101,254,0.2)",
+                      borderColor: "rgb(28,101,254)"
+                  },
+                      {
+                          label: this.localize('gender_female', 'Female', this.language),
+                          fillColor: "transparent",
+                          data: values.map(x => x.female),
+                          lineTension: 0.1,
+                          backgroundColor: "rgba(255,99,132,0.2)",
+                          borderColor: "rgba(254,99,132,2)"
+                      }]
               },
-              {
-                  label: this.localize('gender_female', 'Female', this.language),
-                  fillColor: "transparent",
-                  data: values.map(x => x.female),
-                  lineTension: 0.1,
-                  backgroundColor: "rgba(255,99,132,0.2)",
-                  borderColor: "rgba(254,99,132,2)"
-              }]
-          },
-          options: {
-              responsive: true,
-              aspectRatio: 3,
-              maintainAspectRatio: false
-          }
-      });
+              options: {
+                  responsive: true,
+                  aspectRatio: 3,
+                  maintainAspectRatio: false
+              }
+          });
+      }
   }
 
   exportToCsv() {

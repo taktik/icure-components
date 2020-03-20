@@ -799,13 +799,13 @@ class HtUploadDialog extends TkLocalizerMixin(PolymerElement) {
 
   _hasElectronChanged() {
       if (!this.hasElectron) return;
-      Promise.all([fetch("http://localhost:16042/scanning", {
+      Promise.all([fetch("http://127.0.0.1:16042/scanning", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
               request: "list"
           })
-      }), fetch('http://localhost:16042/getPrinterSetting', {
+      }), fetch('http://127.0.0.1:16042/getPrinterSetting', {
           method: "POST",
           headers: {
               "Content-Type": "application/json; charset=utf-8"
@@ -1000,7 +1000,7 @@ class HtUploadDialog extends TkLocalizerMixin(PolymerElement) {
 
   _launchScan() {
       this.set("isScanning", true);
-      fetch("http://localhost:16042/scanning", {
+      fetch("http://127.0.0.1:16042/scanning", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
@@ -1200,6 +1200,8 @@ class HtUploadDialog extends TkLocalizerMixin(PolymerElement) {
       this.set('files', []);
       this.set('_bodyOverlay', true);
       this.set('currentContact', currentContact);
+      this.set('_documentDate', moment().format("YYYY-MM-DD"));
+
 
       this.scannerList = [
           { id: 1, code: '1', label : 'scanner A' },

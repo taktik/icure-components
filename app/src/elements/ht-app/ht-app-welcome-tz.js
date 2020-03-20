@@ -367,7 +367,7 @@ class HtAppWelcomeTz extends TkLocalizerMixin(PolymerElement) {
       this.credentials.username = this.user.login;
       this.credentials.password = this.user.passwordHash;
 
-      return fetch('http://localhost:16042/create-first-user',{
+      return fetch('http://127.0.0.1:16042/create-first-user',{
           method: "POST",
           headers: {
               "Content-Type" : "application/json; charset=utf-8"
@@ -379,7 +379,7 @@ class HtAppWelcomeTz extends TkLocalizerMixin(PolymerElement) {
 
   replicate() {
 
-      fetch('http://localhost:16042/replicate',{
+      fetch('http://127.0.0.1:16042/replicate',{
           method: "POST",
           headers: {
               "Content-Type" : "application/json; charset=utf-8"

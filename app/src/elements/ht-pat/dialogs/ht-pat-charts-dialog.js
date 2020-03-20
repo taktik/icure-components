@@ -12,6 +12,23 @@ import {TkLocalizerMixin} from "../../tk-localizer";
 import {mixinBehaviors} from "@polymer/polymer/lib/legacy/class";
 import {IronResizableBehavior} from "@polymer/iron-resizable-behavior";
 import {PolymerElement, html} from '@polymer/polymer';
+const curves = require('./rsrc/growth-curves.json')
+const growthCurves = [
+    //{ id: "HeadWeeks", code: "head", period: "weeks" },
+    //{ id: "HeadMonths", code: "head", period: "months" },
+    { id: "HeightWeeks", code: "height", period: "weeks" },
+    { id: "HeightMonths", code: "height", period: "months" },
+    { id: "WeightWeeks", code: "weight", period: "weeks" },
+    { id: "WeightMonths", code: "weight", period: "months" }
+]
+
+const pSeries = [
+    { index: 1, id: 'P3', color: "rgb(187,0,19)", backgroundColor: "rgb(187,0,19,0.2)", width: 2 },
+    { index: 2, id: 'P15', color: "rgb(255,114,37)", backgroundColor: "rgb(255,114,37,0.2)", dash: [5, 10] },
+    { index: 3, id: 'P50', color: "rgb(0,115,25)", backgroundColor: "rgb(0,115,25,0.2)", width: 2 },
+    { index: 4, id: 'P85', color: "rgb(255,114,37)", backgroundColor: "rgb(255,114,37,0.2)", dash: [5, 10] },
+    { index: 5, id: 'P97', color: "rgb(187,0,19)", backgroundColor: "rgb(187,0,19,0.2)", width: 2 },
+]
 class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior], PolymerElement)) {
   static get template() {
     return html`
@@ -233,12 +250,12 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
                     <div class="charts-submenu-container">
                         <paper-listbox id="menu" class="menu-content sublist" selected="[[selectedItem]]" attr-for-selected="id">
                         <template is="dom-repeat" items="[[charts]]">
-                            <paper-item id="[[item.id]]" class\$="menu-trigger menu-item [[isIronSelected(selected)]]" aria-selected="[[selected]]" on-tap="toggleMenu" elevation="">
-                                <div class="one-line-menu">
+                           <paper-item id="[[item.id]]" class$="menu-trigger menu-item [[isIronSelected(selected)]]" aria-selected="[[selected]]" on-tap="toggleMenu" elevation="">
+                               <div class="one-line-menu">
                                     <span class="force-left force-ellipsis box-txt">[[item.name]]</span>
                                     <!-- <span>[[item.name]]</span>-->
-                                </div>
-                            </paper-item>
+                               </div>
+                           </paper-item>
                         </template>
                         </paper-listbox>
                     </div>
@@ -283,6 +300,10 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
           contacts: {
               type: Array,
               value: ()=>[]
+          },
+          patient: {
+              type: Object,
+              value: null
           },
           language: {
               type: String
@@ -707,7 +728,7 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
   }
 
   isIronSelected(selected) {
-       return selected ? 'iron-selected' : '';
+      return selected ? 'iron-selected' : '';
   }
 
   select(id) {
@@ -735,7 +756,15 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
           options: {
               responsive: true,
               aspectRatio: 3,
-              maintainAspectRatio: false
+                  maintainAspectRatio: false,
+              cubicInterpolationMode: 'default',
+              scales: {
+                  yAxes: [{
+                      id: 'y-log-axis',
+                      type: 'linear'
+                      //type: 'logarithmic'
+                  }]
+              }
           }
       });
   }
@@ -773,13 +802,23 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
       return !!this._getValue(s);
   }
 
-  _getValue(s) {
-      const value = this._getContentValue(s, "measureValue.value");
-      return value ? value : this._getContentValue(s, "numberValue");
+  _getLabel(s) {
+      return this.api.moment(_.get(s, 'valueDate', null)).format('DD/MM/YYYY');
+  }
+  _getServices() {
+      return _.uniqBy(this.contacts.flatMap(contact => _.get(contact, 'services', [])), 'id');
   }
 
-  _getLabels(code) {
-      return _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services', []).filter(s => _.get(s, 'tags', [])))).map(s => s.tags.find(t => t.type === "CD-PARAMETER" && t.code === code) && this._hasValue(s) ? this.api.moment(_.get(s, 'valueDate', null)).format('DD/MM/YYYY') : null)) || [];
+  _sort(services) {
+      return services.sort((a,b) => this._compareValueDates(b.valueDate, a.valueDate));
+  }
+
+  _inWeeks(self, s, dateOfBirth) {
+      return self.api.moment(s.valueDate).diff(dateOfBirth, 'weeks') < 13;
+  }
+
+  _inMonths(self, s, dateOfBirth) {
+      return self.api.moment(s.valueDate).diff(dateOfBirth, 'months') < 60;
   }
 
   _getValues(code) {
@@ -791,17 +830,18 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
   }
 
   _newChart(id) {
+      const services = this._sort(this._getServices().filter(s => this._hasTag(s, id) && this._hasValue(s)));
       return {
           id: id,
           name: this.localize('chart-' + id, id, this.language),
           info: {
               type: 'line',
               data: {
-                  labels: this._getLabels(id),
+                  labels: services.map(s => this._getLabel(s)),
                   datasets: [{
                       label: this.localize('chart-' + id, id, this.language),
                       fillColor: "transparent",
-                      data: this._getValues(id),
+                      data: services.map(s => this._getValue(s)),
                       lineTension: 0.1,
                       backgroundColor: "rgba(255,99,132,0.2)",
                       borderColor: "rgba(254,99,132,2)"
@@ -813,6 +853,7 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
   }
 
   _initialize() {
+      const bpValues = this._getBpValues();
       let charts = [
           this._newChart("bmi"),
           this._newChart("weight"),
@@ -823,19 +864,18 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
               info: {
                   type: 'line',
                   data: {
-                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services', []).filter(s => _.get(s, 'tags', [])))).map(s => s.tags.find(t => t.type === "CD-PARAMETER" && t.code === "dbp") ? this.api.moment(_.get(s, 'valueDate', null)).format('DD/MM/YYYY') : null)),
+                      labels: bpValues.map(bp => this.api.moment(bp.valueDate).format('DD/MM/YYYY')),
                       datasets: [{
                           label: this.localize('chart-sbp', 'Systolic blood pressure', this.language),
                           fillColor: "transparent",
-                          data: this._getValues("sbp"),
+                          data: bpValues.map(bp => bp.sbp),
                           lineTension: 0.1,
                           backgroundColor: "rgba(255,99,132,0.2)",
                           borderColor: "rgba(254,99,132,2)"
-                      },
-                      {
+                      }, {
                           label: this.localize('chart-dbp', 'Diastolic blood pressure', this.language),
                           fillColor: "transparent",
-                          data: this._getValues("dbp"),
+                          data: bpValues.map(bp => bp.dbp),
                           lineTension: 0.1,
                           backgroundColor: "rgba(28,101,254,0.2)",
                           borderColor: "rgb(28,101,254)"
@@ -846,9 +886,14 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
           }
       ];
 
+      if (this.patient.gender === "male")
+          this._createGrowthCharts(charts, "boys");
+      if (this.patient.gender === "female")
+          this._createGrowthCharts(charts, "girls");
+
       const contacts = this.contacts.filter(ctc => ctc.encounterType && ctc.encounterType.type === "CD-TRANSACTION" && ctc.encounterType.code === "labresult");
       this._labResults.forEach(labResult => {
-          const services = contacts.flatMap(c => c.services.filter(s => this._match(s, labResult)));
+          const services = _.uniqBy(contacts.flatMap(c => c.services.filter(s => this._match(s, labResult))), 'id');
           console.log(labResult.name + " " + services.length);
           if (services.length > 0) {
               services.sort((a,b) => this._compareValueDates(a.valueDate, b.valueDate));
@@ -908,7 +953,7 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
                       @page {size: A4 landscape; width: 210mm; height: 297mm; margin: 0; padding: 0; }
                       body {margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; line-height:1.3em; }
                       .page { width: 300mm; color:#000000; font-size:12px; padding:10mm; position:relative; }
-                      .imageContainer img {max-width:100%; height:auto; margin-top: 80px}
+                      .imageContainer img {width:auto; height:190mm;}
                   </style>
               </head>
 
@@ -919,6 +964,99 @@ class HtPatChartsDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBe
               </body>
           </html>
       `
+  }
+
+    _newGrowthChart(id, data, series, label, measures) {
+
+      let datasets = series.map(serie => {
+          return {
+              label: this.localize('chart-' + serie.id, serie.id, this.language),
+                  fillColor: "transparent",
+                  data: data.map(d => d[serie.index]),
+                  fill: false,
+                  lineTension: 0.5,
+                  borderDash: _.get(serie, "dash", []),
+              borderWidth: _.get(serie, "width", 1),
+              borderColor: _.get(serie, "color", "rgb(28,101,254)"),
+              backgroundColor: _.get(serie, "backgroundColor", "rgb(28,101,254,0.2)"),
+              pointRadius: 0,
+              pointHitRadius: 0,
+              pointBorderWidth: 0,
+              spanGaps: true,
+              cubicInterpolationMode: 'default'
+          }
+      })
+
+        if (label && measures && measures.length) {
+            datasets.push({
+                label: this.localize(label, label, this.language),
+                fillColor: "transparent",
+                data: measures,
+                fill: false,
+                lineTension: 0.1,
+                borderWidth: 2,
+                borderColor: "rgb(28,101,254)",
+                backgroundColor: "rgb(28,101,254,0.2)",
+                spanGaps: true
+            })
+        }
+        return {
+            id: id,
+                name: this.localize('chart-' + id, id, this.language),
+            info: {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d[0]),
+                    datasets: datasets,
+                }
+            }
+        }
+  }
+
+  _createGrowthCharts(charts, gender) {
+      const dateOfBirth = this.api.moment(this.patient.dateOfBirth);
+      growthCurves.forEach(curve => {
+          const name = gender + curve.id
+          const filter = curve.period === "weeks" ? this._inWeeks : this._inMonths;
+          const services = this._sort(this._getServices().filter(s => filter(this, s, dateOfBirth) && this._hasTag(s, curve.code) && this._hasValue(s)));
+          if (services.length > 0) {
+              const labels = services.map(s => s.valueDate);
+              const values = services.map(s => this._getValue(s));
+              const data = curves[name + "P"];
+              let measures = data.map(d => null);
+              labels.forEach((label, i) => {
+                  const index = this.api.moment(label).diff(dateOfBirth, curve.period);
+                  measures[index] = values[i];
+              })
+              charts.push(this._newGrowthChart(name, data, pSeries, curve.code, measures));
+          }
+      })
+  }
+
+  _getBpValues() {
+      let values = [];
+      const subContacts = this.contacts.flatMap(contact => _.get(contact, 'subContacts', []).filter(sc => sc.formId));
+      const services = this._getServices().filter(s => (this._hasTag(s, "sbp") || this._hasTag(s, "dbp")) && this._hasValue(s));
+      services.forEach(service => {
+          const ids = subContacts.filter(sc => _.get(sc, 'services', []).some(s => s.serviceId === service.id)).map(sc => sc.formId);
+          if (ids.length > 0) {
+              const id = ids.sort((a, b) => a > b).toString();
+              let value = values.find(v => v.id === id);
+              if (!value) {
+                  value = { id : id, sbp: null, dbp: null };
+                  values.push(value);
+              }
+              value.valueDate = service.valueDate;
+              value[this._hasTag(service, "sbp") ? "sbp" : "dbp"] = this._getValue(service);
+          }
+          else
+              console.error("id(s) not found")
+      })
+        return values.sort((a, b) => this._compareValueDates(b.valueDate, a.valueDate));
+  }
+
+  _hasTag(s, code) {
+      return _.get(s, 'tags', []).some(t => t.type === "CD-PARAMETER" && t.code === code);
   }
 }
 customElements.define(HtPatChartsDialog.is, HtPatChartsDialog);

@@ -640,7 +640,8 @@ class HtPatPrimaryPreventionDialog extends TkLocalizerMixin(mixinBehaviors([Iron
               value: () => [
                   //{label: {fr:'Par sms', nl:'Bij sms', en:'By sms'}, code: "sms"},
                   //{label: {fr:'Par email', nl:'Bij mail', en:'By email'}, code:"mail"},
-                  {label: {fr:'Par liste Excel pour publipostage', nl:'Bij Excel', en:'By Excel'}, code:"xlsx"}
+                  //{label: {fr:'Publipostage pdf', nl:'Bij Pdf', en:'By Pdf'}, code:"pdf"},
+                  {label: {fr:'Par liste Excel', nl:'Bij Excel', en:'By Excel'}, code:"xlsx"}
               ]
           },
           listOfClinicalPlan:{
@@ -819,6 +820,8 @@ class HtPatPrimaryPreventionDialog extends TkLocalizerMixin(mixinBehaviors([Iron
                       })
                   }else if(_.get(this.selectedReminderType, 'code', null) === "mail"){
 
+                  }else if(_.get(this.selectedReminderType, 'code', null) === "pdf"){
+                      Promise.resolve(this._generatePdfForPublipostage())
                   }
               }
           }).finally(() => {
@@ -920,6 +923,60 @@ class HtPatPrimaryPreventionDialog extends TkLocalizerMixin(mixinBehaviors([Iron
 
   _isAvailableForPublipostage(pat){
       return !!_.get(pat, 'addresses', []).find(adr => _.get(adr, 'addressType', null) === "home" && _.get(adr, 'street', null) !== "" && _.get(adr, 'street', null) !== null)
+  }
+
+    _generatePdfForPublipostage(){
+      let pdfTemplate = ""
+        pdfTemplate+="<html>"
+        pdfTemplate+="  <head>"
+        pdfTemplate+="  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet'>"
+        pdfTemplate+="     <style>"
+        pdfTemplate+="       @page {size: A4; width: 210mm; height: 297mm; margin: 0; padding: 0}"
+        pdfTemplate+="       body {margin: 0; padding: 0; font-family: /* 'Open Sans', */ Arial, Helvetica, sans-serif; line-height:1em;}"
+        pdfTemplate+="       .title{height: 20px; font-size: 14px; width: 100%;}"
+        pdfTemplate+="       .sub-title{height: 15px; font-size: 12px; width: 100%;}"
+        pdfTemplate+="       .separator{height: 2px; width: 100%; border-bottom: 1px solid black;}"
+        pdfTemplate+="       .page {width: 210mm; color:#000000; font-size:12px; padding:10mm; position:relative;}"
+        pdfTemplate+="       .textaligncenter { text-align: center; } .textalignleft { text-align: left; } .textalignright { text-align: right; }"
+        pdfTemplate+="       .b{font-weight: bold}"
+        pdfTemplate+="       .mutuality-block{border: 1px solid black; width: 100%; height: auto;}"
+        pdfTemplate+="       .date-signature{height: 30px; width: 100%;}"
+        pdfTemplate+="       .border{border: 1px solid black;}"
+        pdfTemplate+="       .s14{font-size: 10px;}"
+        pdfTemplate+="       .s10{font-size: 10px;}"
+        pdfTemplate+="       .s9{font-size: 9px;}"
+        pdfTemplate+="       .condition-block{height: 150px;}"
+        pdfTemplate+="       .stamp-date-signature-title{width: 100%}"
+        pdfTemplate+="       .stamp-date-signature{width: 100%; height: 55px;}"
+        pdfTemplate+="       .check{height: 10px; width: 10px; background-color; black;}"
+        pdfTemplate+="       .uncheck{height: 10px; width: 10px;}"
+        pdfTemplate+="     </style>"
+        pdfTemplate+="  </head>"
+        pdfTemplate+="  <body>"
+        _.get(this, "selectedPatientForPrevention", []).map(pat => {
+            pdfTemplate += " <div class='page'>"
+            pdfTemplate += "    <div>"
+            pdfTemplate += "        <div>"+_.get(pat, 'patient.gender', null) === "male" ? "Monsieur " : "Madame " + " " + _.get(pat, 'patient.lastName', null) + " " + _.get(pat, 'patient.firstName', null) + "</div>"
+            pdfTemplate += "        <div>"+_.get(_.get(pat, 'patient.addresses', []).find(adr => _.get(adr, 'addressType', null) === "home"), "houseNumber", null)+" "+_.get(_.get(pat, 'patient.addresses', []).find(adr => _.get(adr, 'addressType', null) === "home"), "street", null)+"</div>"
+            pdfTemplate += "        <div>"+_.get(_.get(pat, 'patient.addresses', []).find(adr => _.get(adr, 'addressType', null) === "home"), "postalCode", null)+" "+_.get(_.get(pat, 'patient.addresses', []).find(adr => _.get(adr, 'addressType', null) === "home"), "city", null)+"</div>"
+            pdfTemplate += "        <div>"+_.get(_.get(pat, 'patient.addresses', []).find(adr => _.get(adr, 'addressType', null) === "home"), "country", null)+"</div>"
+            pdfTemplate += "    </div>"
+            pdfTemplate += "    <div>"
+            pdfTemplate += "      <div class='s14'>" + _.get(pat, 'patient.gender', null) === "male" ? "Monsieur " : "Madame " + " " + _.get(pat, 'patient.lastName', null) + " " + _.get(pat, 'patient.firstName', null) + ", </div>"
+            pdfTemplate += "      <div class='s14'>"
+            pdfTemplate += "          <div>Vous avez entre 50 et 74 ans, vous êtes concerné !.</div>"
+            pdfTemplate += "          <div>A partir de 50 ans, le risque de développer un cancer colorectal est plus fréquent.</div>"
+            pdfTemplate += "          <div>Le dépistage, tous les 2 ans, est un moyen efficace de lutter contre ce cancer et de le détecter tôt, permettant ainsi de meilleures chances de guérison. Il est même possible de repérer dans certains cas une lésion précancéreuse et de la soigner avant qu'elle n'évolue en cancer.</div>"
+            pdfTemplate += "          <div>Votre médecin généraliste</div>"
+            pdfTemplate += "      </div>"
+            pdfTemplate += "    </div>"
+            pdfTemplate += " </div>"
+        })
+        pdfTemplate+=       '<'+'script'+'>'+'document.fonts.ready.then(() => { setInterval(() => {document.body.dispatchEvent(new CustomEvent("pdfDoneRenderingEvent"))}, 500); }); <'+'/script'+'>'
+        pdfTemplate+="  </body>"
+        pdfTemplate+="</html>"
+        this.api.pdfReport(pdfTemplate, {type:"unknown",completionEvent:"pdfDoneRenderingEvent"})
+            .then(printedPdf => !printedPdf.printed && this.api.triggerFileDownload( printedPdf.pdf, "application/pdf", _.kebabCase(_.trim(_.get(this,"_data.content.dateYYYYMMDD",moment().format("YYYYMMDD"))) + "-" +_ .trim(_.get(this,"_data.content.title",this.api.crypto().randomUuid()))) + ".pdf" ))
   }
 }
 customElements.define(HtPatPrimaryPreventionDialog.is, HtPatPrimaryPreventionDialog);

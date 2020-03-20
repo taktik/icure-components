@@ -102,7 +102,7 @@ import "@vaadin/vaadin-grid/vaadin-grid-tree-toggle"
 import moment from 'moment/src/moment'
 import Worker from 'worker-loader!./workers/ehboxWebworker.js'
 const runtime = require('offline-plugin/runtime');
-
+import _ from 'lodash/lodash';
 import io from 'socket.io-client';
 import {PolymerElement, html} from '@polymer/polymer';
 import {TkLocalizerMixin} from "./elements/tk-localizer";
@@ -693,7 +693,7 @@ class HtApp extends TkLocalizerMixin(PolymerElement) {
 
         </style>
 
-        <icc-api id="api" host="[[icureUrl]]" fhc-host="[[fhcUrl]]" headers="[[headers]]" credentials="[[credentials]]"></icc-api>
+        <icc-api id="api" host="[[icureUrl]]" fhc-host="[[fhcUrl]]" electron-host="[[electronUrl]]" headers="[[headers]]" credentials="[[credentials]]"></icc-api>
 
          <paper-item id="noehealth" class="notification-panel noehealth">[[localize('no_ehe_con','No Ehealth connection',language)]]
              <iron-icon icon="icons:warning"></iron-icon>
@@ -961,8 +961,16 @@ class HtApp extends TkLocalizerMixin(PolymerElement) {
                 <paper-input class="inviteHcpInput" label="[[localize('las_nam','Last name',language)]]" value="{{lastName}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('fir_nam','First name',language)]]" value="{{firstName}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('ema','Email',language)]]" value="{{email}}"></paper-input>
+                <paper-input class="inviteHcpInput" label="[[localize('phone','Phone',language)]]" value="{{phone}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('inami','NIHII',language)]]" value="{{nihii}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('ssin','SSIN',language)]]" value="{{ssin}}"></paper-input>
+                <paper-dropdown-menu label="[[localize('language','language',language)]]" selected-item="{{lang}}">
+                    <paper-listbox slot="dropdown-content" class="dropdown-content">
+                        <paper-item id="fr">[[localize('fre','French',language)]]</paper-item>
+                        <paper-item id="en">[[localize('eng','English',language)]]</paper-item>
+                        <paper-item id="nl">[[localize('dut','Deutch',language)]]</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
             </div>
 
             <div class="buttons">
@@ -1359,7 +1367,16 @@ class HtApp extends TkLocalizerMixin(PolymerElement) {
               type : Boolean,
               value : false
           },
-      }
+          phone:{
+              type: String,
+              value: null
+          },
+          lang:{
+              type: String,
+              value: null
+          }
+
+  }
   }
 
   static get observers() {
@@ -1411,7 +1428,8 @@ class HtApp extends TkLocalizerMixin(PolymerElement) {
       const params = this.route.__queryParams //_.fromPairs((this.route.path.split('?')[1] || "").split('&').map(p => p.split('=')))
       this.set('icureUrl', params.icureUrl || `https://backendb.svc.icure.cloud/rest/v1`)//`https://backend${window.location.href.replace(/https?:\/\/.+?(b?)\.icure\.cloud.*/,'$1')}.svc.icure.cloud/rest/v1`)
       this.set('fhcUrl', params.fhcUrl || (window.location.href.includes('https://tzb') ? 'https://fhctz.icure.cloud' : 'https://fhcprd.icure.cloud'))
-
+      this.set('electronUrl', params.electronUrl || "http://127.0.0.1:16042");
+      this.set('mikronoProxy', params.mikronoProxy || 'http://127.0.0.1:16041');
       this.set('defaultIcureUrl', this.icureUrl)
       this.set('defaultFhcUrl', this.fhcUrl)
 
@@ -1474,7 +1492,7 @@ class HtApp extends TkLocalizerMixin(PolymerElement) {
       this.api.isElectronAvailable().then(electron => {
           this.set("isElectron",electron)
           if (electron) {
-              this.set("socket",io('http://localhost:16042'))
+              this.set("socket",io(_.get(this,"api.electronHost","http://127.0.0.1:16042")))
 
               this.socket.on("connect", () => {
                   console.log("connection avec le socket de electron")
@@ -1497,7 +1515,7 @@ class HtApp extends TkLocalizerMixin(PolymerElement) {
                   }
               })
 
-              fetch('http://localhost:16042/checkDrugs',{
+              fetch('http://127.0.0.1:16042/checkDrugs',{
                   method: "GET",
                   headers: {
                       "Content-Type": "application/json; charset=utf-8"

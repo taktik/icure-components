@@ -103,13 +103,12 @@ class DynamicDoc extends TkLocalizerMixin(PolymerElement) {
                 display:flex;
                 justify-content: center;
                 align-items: center;
-                max-height:400px;
                 overflow: hidden;
             }
 
             .img-container img{
-                max-height:400px;
                 align-self: center;
+                width: inherit;
             }
 
             .txt-container {

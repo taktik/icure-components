@@ -13,8 +13,8 @@ import {mixinBehaviors} from "@polymer/polymer/lib/legacy/class";
 import {IronResizableBehavior} from "@polymer/iron-resizable-behavior";
 import {PolymerElement, html} from '@polymer/polymer';
 class HtPatPrescriptionDialog extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior], PolymerElement)) {
-  static get template() {
-    return html`
+    static get template() {
+        return html`
         <style include="dialog-style">
             .endline {
 				display: flex;
@@ -492,7 +492,7 @@ class HtPatPrescriptionDialog extends TkLocalizerMixin(mixinBehaviors([IronResiz
       this.$.dialog.open()
       this._refreshDrugsToBePrescribed()
       this.api && this.api.isElectronAvailable()
-          .then(hasElectron => hasElectron ? fetch('http://localhost:16042/getPrinterSetting', {
+          .then(hasElectron => hasElectron ? fetch(`${_.get(this,"api.electronHost","http://127.0.0.1:16042")}/getPrinterSetting`, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json; charset=utf-8"
@@ -812,6 +812,9 @@ class HtPatPrescriptionDialog extends TkLocalizerMixin(mixinBehaviors([IronResiz
                       }
                   });
               }
+              medicationValue.regimen.filter(r => r.administratedQuantity.quantity === "1/2").forEach(i => i.administratedQuantity.quantity = 0.5);
+              medicationValue.regimen.filter(r => r.administratedQuantity.quantity === "1/3").forEach(i => i.administratedQuantity.quantity = 0.33);
+              medicationValue.regimen.filter(r => r.administratedQuantity.quantity === "1/4").forEach(i => i.administratedQuantity.quantity = 0.25);
           } else {
               if (!medicationValue.instructionForPatient) {
                   medicationValue.knownUsage = true;

@@ -652,7 +652,7 @@ class HtMsgList extends TkLocalizerMixin(PolymerElement) {
                         <template is="dom-if" if="[[!_isEqual(menuSelectionObject.selection.folder,'assigned')]]"><template is="dom-if" if="[[_isEqual(menuSelectionObject.selection.folder,'hidden')]]"><paper-icon-button id="restoreHiddenMessagesButton" icon="undo" on-tap="_hideUnHideMessages"></paper-icon-button><paper-tooltip for="restoreHiddenMessagesButton" offset="0">[[localize('ehb.restoreHiddenMessages','Restore hidden messages',language)]]</paper-tooltip></template></template>
                         <template is="dom-if" if="[[!_isEqual(menuSelectionObject.selection.folder,'deleted')]]"><paper-icon-button id="del-button" icon="delete" on-tap="_deletedUndeleteMessages"></paper-icon-button></template>
                         <template is="dom-if" if="[[_isEqual(menuSelectionObject.selection.folder,'deleted')]]"><paper-icon-button id="restore-button" icon="undo" on-tap="_deletedUndeleteMessages"></paper-icon-button><paper-icon-button id="del-for-button" icon="delete-forever" on-tap="_confirmDeleteMessagesForEver"></paper-icon-button></template>
-                        <template is="dom-if" if="[[!_isEqual(menuSelectionObject.selection.folder,'assigned')]]"><paper-icon-button id="flagAsUnreadButton" icon="markunread-mailbox" on-tap="_flagAsUnred"></paper-icon-button><paper-tooltip for="flagAsUnreadButton" offset="0">[[localize('ehb.flagAsUnread','Flag as unread',language)]]</paper-tooltip></template>
+                        <template is="dom-if" if="[[!_isEqual(menuSelectionObject.selection.folder,'assigned')]]"><paper-icon-button id="flagAsUnreadButton" icon="markunread-mailbox" on-tap="_flagAsUnread"></paper-icon-button><paper-tooltip for="flagAsUnreadButton" offset="0">[[localize('ehb.flagAsUnread','Flag as unread',language)]]</paper-tooltip></template>
                     </template>
     
                     <template is="dom-if" if="[[!_haveGridSelectedMessages]]"><paper-icon-button id="refresh-button" icon="icons:refresh" on-tap="_triggerGetEHealthBoxDataForceRefresh"></paper-icon-button></template>
@@ -736,9 +736,9 @@ class HtMsgList extends TkLocalizerMixin(PolymerElement) {
                         -->
                         <template>
                             <div class$="cell [[_boldIfIsUnread(item)]]">
-                                <template is="dom-if" if="[[_isImportant(item)]]"><iron-icon icon="warning" class="darkRed"></iron-icon></template>
+                               <template is="dom-if" if="[[_isImportant(item)]]"><iron-icon icon="vaadin:exclamation" class="darkRed"></iron-icon></template>
                                 <template is="dom-if" if="[[!_isImportant(item)]]"><iron-icon icon="warning" class="darkGreen visibilityHidden"></iron-icon></template>
-                                <template is="dom-if" if="[[_hasAnnex(item)]]"><iron-icon icon="editor:attach-file" class="m-r-5 darkBlue"></iron-icon></template>
+                                <template is="dom-if" if="[[_hasAnnex(item)]]"><iron-icon icon="editor:attach-file" class="m-r-5"></iron-icon></template>
                                 <template is="dom-if" if="[[!_hasAnnex(item)]]"><iron-icon icon="editor:attach-file" class="m-r-5 visibilityHidden"></iron-icon></template>
                                 <template is="dom-if" if="[[!_isEqual(menuSelectionObject.selection.folder,'sent')]]">[[item.fromAddress]]</template>
                                 <template is="dom-if" if="[[_isEqual(menuSelectionObject.selection.folder,'sent')]]">[[_formatRecipientDetailsForSentFolder(item)]]</template>
@@ -1210,7 +1210,7 @@ class HtMsgList extends TkLocalizerMixin(PolymerElement) {
 
     }
 
-    _flagAsUnred() {
+    _flagAsUnread() {
 
         const selectedMessages = _.filter(this._getGridSelectedItems(),i=>!(_.get(i,"status",0) & (1 << 1)))
         if(!_.size(selectedMessages)) return
@@ -1800,7 +1800,8 @@ class HtMsgList extends TkLocalizerMixin(PolymerElement) {
                     this.api.accesslog().createAccessLogWithUser(this.user,log)
                 })
                 let contactObjectForInstance = {
-                    groupId: _.trim(_.get(givenMessage,"id","")),
+                    //groupId: _.trim(_.get(givenMessage,"id","")),
+                    groupId: this.api.crypto().randomUuid(),
                     created: +new Date,
                     modified: +new Date,
                     author: _.trim(_.get(this,"user.id","")),

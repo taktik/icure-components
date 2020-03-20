@@ -9,7 +9,7 @@ import {TkLocalizerMixin} from "../tk-localizer";
 class WidgetUpdatesHistory extends TkLocalizerMixin(PolymerElement) {
   static get template() {
     return html`
-        <style include="scrollbar-style dialog-style buttons-style">
+        <style include="scrollbar-style">
             .card {
 				color: var(--app-text-color);
 				background: var(--app-background-color);
@@ -182,26 +182,6 @@ class WidgetUpdatesHistory extends TkLocalizerMixin(PolymerElement) {
 				--paper-input-container-focus-color: var(--app-secondary-color);
 			}
 
-            #updateDialog {
-                width: 50%;
-                height: 50%;
-            }
-
-            .content {
-                padding: 24px;
-            }
-            
-            a {
-                color: var(--app-secondary-color);
-                padding: 0 4px;
-                border-radius: 4px;
-                text-decoration: none;
-                font-weight: 400;
-            }
-
-            a:hover {
-                background: rgba(255, 80, 0, .2);
-            }
 
         </style>
         <div class="card-title-container">
@@ -229,42 +209,7 @@ class WidgetUpdatesHistory extends TkLocalizerMixin(PolymerElement) {
                 </div>
             </template>
         </div>
-        <paper-dialog id="updateDialog">
-            <h2 class="modal-title">[[selectedUpdate.mainTitle]]<label class="update-date"><span>[[selectedUpdate.updateDate]]</span></label></h2>
-            <div class="content">
-                <template is="dom-if" if="[[_isNews(selectedUpdate)]]">
-                    <div class="newsContent">
-                        <template is="dom-repeat" items="[[selectedUpdate.modules]]" as="module">
-                            <div inner-h-t-m-l="[[_localizeContent(module.description)]]"></div>
-                        </template>
-                    </div>
-                </template>
-                <template is="dom-if" if="[[_isUpdate(selectedUpdate)]]">
-                    UPDATE
-                    <div class="blockUpdate">
-                        <div class="versionTitle bold">
-                            Version: [[selectedUpdate.version]]
-                        </div>
-                        <ol>
-                            <template is="dom-repeat" items="[[selectedUpdate.modules]]" as="module">
-                                <li>
-                                    <span class="releaseNoteTitle">[[_localizeContent(module.areaCode)]] - [[_localizeContent(module.title)]]</span>
-                                    [[_localizeContent(module.description)]]
-                                </li>
-                            </template>
-                        </ol>
-                        <template is="dom-if" if="_isLink(selectedUpdate)">
-                            <div>
-                                Plus d'infos, cliquez <a href="[[selectedUpdate.mainLink]]" target="_blank"> ici</a>.
-                            </div>
-                        </template>
-                    </div>
-                </template>
-            </div>
-            <div class="buttons">
-                <paper-button class="button" dialog-dismiss="">Close</paper-button>
-            </div>
-        </paper-dialog>
+       
 `;
   }
 
@@ -308,10 +253,6 @@ class WidgetUpdatesHistory extends TkLocalizerMixin(PolymerElement) {
       return content && content[this.language] ? content[this.language].replace(/<\/?[^>]+(>|$)/g, "") : null
   }
 
-  _localizeContent(content){
-      return content && content[this.language] ? content[this.language] : null
-  }
-
   _updateDialog(e){
       e.stopPropagation()
       e.preventDefault()
@@ -320,21 +261,10 @@ class WidgetUpdatesHistory extends TkLocalizerMixin(PolymerElement) {
           target = target.parentNode;
       }
       const update = JSON.parse(target.dataset.update)
-      this.set('selectedUpdate', update)
-      this.$['updateDialog'].open()
+      this.dispatchEvent(new CustomEvent("update-selected",{detail:update, bubbles: true, composed: true}))
   }
 
-  _isLink(update){
-      return update && update.mainLink ? true : false
-  }
 
-  _isNews(update){
-      return update && update.mainType && update.mainType === "News" ? true : false
-  }
-
-  _isUpdate(update){
-      return update && update.mainType && update.mainType === "Update" ? true : false
-  }
 
   _getDate(date){
       return date ? moment(date).format("DD/MM/YYYY") : null

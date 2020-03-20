@@ -403,6 +403,7 @@ class HtExportKey extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior
   }
 
   listingPatients(user){
+      if(!this.user)return;
       let latestSearchValue = this.filterValue
       this.latestSearchValue = latestSearchValue
 
@@ -457,7 +458,7 @@ class HtExportKey extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior
   }
 
   listingAccessByUser(filter,date){
-      if(filter!==this.filterValue || date!==this.searchDate)return;
+      if(filter!==this.filterValue || date!==this.searchDate ||!this.user) return Promise.resolve([]);
 
       if(this.usersList.length){
           return Promise.all(this.usersList.filter(user => !_.get(this.listMoreAccess,user.id,false) || _.get(this.listMoreAccess,user.id+'.needMoreLogs',false)).map(user => {
@@ -489,7 +490,7 @@ class HtExportKey extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior
   }
 
   listingAccessByPatient(filter){
-      if(filter!==this.filterValue)return;
+      if(filter!==this.filterValue || !this.user)return;
       return Promise.all(this.patientsList && this.patientsList.length ? this.patientsList.map(pat => this.api.accesslog().findBy(this.user.healthcarePartyId,pat)) : [])
           .then(logsByPatient => {
               return logsByPatient && logsByPatient.length ? logsByPatient : []
@@ -500,6 +501,7 @@ class HtExportKey extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior
   }
 
   setLinkPatient(logs){
+      if(!this.user)return;
       return Promise.all(logs.map(log => this.api.crypto().extractCryptedFKs(log, this.user.healthcarePartyId).then(ids =>{
           log.patientId= log.patientId || ids.extractedKeys[0];
           return log;
@@ -507,6 +509,7 @@ class HtExportKey extends TkLocalizerMixin(mixinBehaviors([IronResizableBehavior
   }
 
   format(logsWithoutPatient){
+      if(!this.user)return;
       this.api && this.api.setPreventLogging();
       this.setLinkPatient(logsWithoutPatient).then(logs =>{
           const logListTemp=logs.filter(log=> this.patientsList.find(pat=> pat.id===log.patientId) || this.usersList.find(user => user.id===log.user))

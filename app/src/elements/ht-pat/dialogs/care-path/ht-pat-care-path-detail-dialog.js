@@ -947,6 +947,14 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
                                             <canvas id="hba1cChart" class="charts"></canvas>
                                         </div>
                                     </div>
+                                    <div class="charts-container-row">
+                                        <div class="charts-container-row-title">
+                                            [[localize("", "Dosage de la glycémie", language)]]
+                                        </div>
+                                        <div class="charts-container-row-content">
+                                            <canvas id="glycemicChart" class="charts"></canvas>
+                                        </div>
+                                    </div>
                                 </div>
                             </template>
                         </div>
@@ -1367,7 +1375,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                      labels: _.compact(_.flatten(this.contactsOfCarePath.map(ctc => _.get(ctc, 'services', []).filter(s => _.get(s, 'tags', [])))).map(s => s.tags.find(t => t.type === "CD-PARAMETER" && t.code === "bmi") ? this.api.moment(_.get(s, 'created', null)).format('DD/MM/YYYY') : null)) || [],
+                      labels: _.compact(_.flatten(this.contactsOfCarePath.map(ctc => _.get(ctc, 'services', []).filter(s => _.get(s, 'tags', [])))).map(s => s.tags.find(t => t.type === "CD-PARAMETER" && t.code === "bmi") ? this.api.moment(_.get(s, 'created', null), "YYYYMMDD").format('DD/MM/YYYY') : null)) || [],
                       datasets: [{
                           label: "BMI",
                           fillColor: "transparent",
@@ -1383,7 +1391,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                  labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("CHO-LDL / CHO-HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTASE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LDL  CALCULE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LIE AUX L.D.L") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LIE AUX VLDV") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL NON HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL TOTAL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL TOTAL/HDL") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol hdl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol ldl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol ldl calcul,") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol ldl calcul,") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol non hdl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol total") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol total/hdl,")) ? this.api.moment(_.get(s, 'valueDate', null)).format('DD/MM/YYYY') : null)) || [],
+                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("CHO-LDL / CHO-HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTASE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LDL  CALCULE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LIE AUX L.D.L") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL LIE AUX VLDV") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL NON HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL TOTAL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL TOTAL/HDL") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol hdl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol ldl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol ldl calcul,") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol ldl calcul,") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol non hdl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol total") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol total/hdl,")) ? this.api.moment(_.get(s, 'valueDate', null), "YYYYMMDD").format('DD/MM/YYYY') : null)) || [],
                       datasets: [
                           {
                           label: "Cholestérol",
@@ -1401,7 +1409,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                  labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine/24h") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine / 24 H. ur") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (g/24h)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (idms)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (old u.)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine sg") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (s/p)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine ur") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (unrines)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (urine 24h)")) ? this.api.moment(_.get(svc, 'valueDate', null)).format('DD/MM/YYYY') : null)) || [],
+                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine/24h") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine / 24 H. ur") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (g/24h)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (idms)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (old u.)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine sg") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (s/p)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine ur") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (unrines)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("creatinine (urine 24h)")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format('DD/MM/YYYY') : null)) || [],
                       datasets: [{
                       label: "Créatinine sanguine",
                           fillColor: "transparent",
@@ -1417,7 +1425,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => _.get(svc, 'label', null) === "Hémoglobine" ? moment(_.get(svc, 'valueDate', null)).format("DD/MM/YYYY") : null)) || [],
+                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => _.get(svc, 'label', null) === "Hémoglobine" ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format("DD/MM/YYYY") : null)) || [],
                       datasets: [{
                       label: "Hémoglobine glyquée",
                           fillColor: "transparent",
@@ -1433,7 +1441,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                  labels:  _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("eGfr")) ? this.api.moment(_.get(svc, 'valueDate', null)).format('DD/MM/YYYY') : null)) || [],
+                      labels:  _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("eGfr")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format('DD/MM/YYYY') : null)) || [],
                       datasets: [{
                       label: "eGFR",
                           fillColor: "transparent",
@@ -1449,7 +1457,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                  labels:  _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d 25-oh") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d (25-oh-d)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d (25oh-d3)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d (25-oh-d3 et d2)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("25-OH Vitamine D3")) ? this.api.moment(_.get(svc, 'valueDate', null)).format('DD/MM/YYYY') : null)) || [],
+                      labels:  _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d 25-oh") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d (25-oh-d)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d (25oh-d3)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("vitamine d (25-oh-d3 et d2)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("25-OH Vitamine D3")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format('DD/MM/YYYY') : null)) || [],
                       datasets: [{
                       label: "25-OH-Vitamine D3",
                           fillColor: "transparent",
@@ -1465,7 +1473,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                      labels: _.compact(_.flatten(this.contactsOfCarePath.map(ctc => _.get(ctc, 'services', []).filter(s => _.get(s, 'tags', [])))).map(s => s.tags.find(t => t.type === "CD-PARAMETER" && t.code === "dbp") ? this.api.moment(_.get(s, 'created', null)).format('DD/MM/YYYY') : null)),
+                      labels: _.compact(_.flatten(this.contactsOfCarePath.map(ctc => _.get(ctc, 'services', []).filter(s => _.get(s, 'tags', [])))).map(s => s.tags.find(t => t.type === "CD-PARAMETER" && t.code === "dbp") ? this.api.moment(_.get(s, 'created', null), "YYYYMMDD").format('DD/MM/YYYY') : null)),
                       datasets: [{
                           label: "Tension systolique",
                           fillColor: "transparent",
@@ -1490,7 +1498,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("microalb./creatinine") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbumine") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbumine/crea") || _.toLower(_.get(svc, 'label', null)) === _.toLower("micro-albuminurie") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie / creatininurie") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie débit") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie debit") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie / volume")) ? moment(_.get(svc, 'valueDate', null)).format("DD/MM/YYYY") : null)) || [],
+                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("microalb./creatinine") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbumine") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbumine/crea") || _.toLower(_.get(svc, 'label', null)) === _.toLower("micro-albuminurie") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie / creatininurie") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie débit") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie debit") || _.toLower(_.get(svc, 'label', null)) === _.toLower("microalbuminurie / volume")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format("DD/MM/YYYY") : null)) || [],
                       datasets: [{
                           label: "Microalbuminurie",
                           fillColor: "transparent",
@@ -1506,7 +1514,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                      labels:  _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("CHO-LDL / CHO-HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL TOTAL/HDL") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol hdl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol total/hdl,")) ? moment(_.get(svc, 'valueDate', null)).format("DD/MM/YYYY") : null)) || [],
+                      labels:  _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null)) === _.toLower("CHO-LDL / CHO-HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL HDL") || _.toLower(_.get(svc, 'label', null)) === _.toLower("CHOLESTEROL TOTAL/HDL") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol hdl") || _.toUpper(_.get(svc, 'label', null)) === _.toUpper("cholestérol total/hdl,")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format("DD/MM/YYYY") : null)) || [],
                       datasets: [{
                           label: "LDL-Cholestérol",
                           fillColor: "transparent",
@@ -1522,12 +1530,28 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               chartInfo: {
                   type: 'line',
                   data: {
-                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null) === "Glycémie")  || _.toLower(_.get(svc, 'label', null) === "hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb81") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee (dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ngsp/dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (si/ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hbc anticorps") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (glyquee)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee ifcc") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (ngsp)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (si pas de diabete connu)")) ? moment(_.get(svc, 'valueDate', null)).format("DD/MM/YYYY") : null)) || [],
+                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null) === "hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb81") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee (dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ngsp/dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (si/ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hbc anticorps") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (glyquee)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee ifcc") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (ngsp)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (si pas de diabete connu)")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format("DD/MM/YYYY") : null)) || [],
                       datasets: [{
                           label: "Hémoglobine",
                           fillColor: "transparent",
-                          data: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null) === "Glycémie")  || _.toLower(_.get(svc, 'label', null) === "hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb81") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee (dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ngsp/dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (si/ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hbc anticorps") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (glyquee)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee ifcc") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (ngsp)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (si pas de diabete connu)")) ? _.get(svc, 'content.fr.measureValue.value', null) : null)) || [],
+                          data: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services',[]))).map(svc => (_.toLower(_.get(svc, 'label', null) === "hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hba1c") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb81") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c glycosylee (dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (ngsp/dcct)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb a1c (si/ifcc)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hbc anticorps") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (glyquee)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee ifcc") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (ngsp)") || _.toLower(_.get(svc, 'label', null)) === _.toLower("hb glycosylee (si pas de diabete connu)")) ? _.get(svc, 'content.fr.measureValue.value', null) : null)) || [],
                           lineTension: 0.1, backgroundColor: "rgba(255,99,132,0.2)", borderColor: "rgba(254,99,132,2)"}]
+                  },
+                  options: {}
+              }
+          },
+          {
+              chartType: 'glycemicChart',
+              chartInfo: {
+                  type: 'line',
+                  data: {
+                      labels: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services', []))).map(svc => (_.toLower(_.get(svc, 'label', null) === "Glycémie") || _.toLower(_.get(svc, 'label', null) === "GLYCEMIE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("GLYCEMIE SER.") || _.toLower(_.get(svc, 'label', null)) === _.toLower("GLYC,MIE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("GLYCEMIE (VALEUR)")) ? this.api.moment(_.get(svc, 'valueDate', null), "YYYYMMDD").format("DD/MM/YYYY") : null)) || [],
+                      datasets: [{
+                          label: "Glycémie",
+                          fillColor: "transparent",
+                          data: _.compact(_.flatten(this.contacts.map(ctc => _.get(ctc, 'services', []))).map(svc => (_.toLower(_.get(svc, 'label', null) === "Glycémie") || _.toLower(_.get(svc, 'label', null) === "GLYCEMIE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("GLYCEMIE SER.") || _.toLower(_.get(svc, 'label', null)) === _.toLower("GLYC,MIE") || _.toLower(_.get(svc, 'label', null)) === _.toLower("GLYCEMIE (VALEUR)")) ? _.get(svc, 'content.fr.measureValue.value', null) : null)) || [],
+                          lineTension: 0.1, backgroundColor: "rgba(255,99,132,0.2)", borderColor: "rgba(254,99,132,2)"
+                      }]
                   },
                   options: {}
               }
@@ -1594,7 +1618,7 @@ class HtPatCarePathDetailDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
       this._saveCarePath()
       const pdfTemplate = this.isRenal() === true ? this._getRenalPdfContent() : this._getDiabetesPdfContent()
       this.api.pdfReport(pdfTemplate, {type:"unknown",completionEvent:"pdfDoneRenderingEvent"})
-          .then(printedPdf => !printedPdf.printed && this.api.triggerFileDownload( printedPdf.pdf, "application/pdf", _.kebabCase(_.trim(_.get(this,"_data.content.dateYYYYMMDD",moment().format("YYYYMMDD"))) + "-" +_ .trim(_.get(this,"_data.content.title",this.api.crypto().randomUuid()))) + ".pdf" ))
+          .then(printedPdf => !printedPdf.printed && this.api.triggerFileDownload( printedPdf.pdf, "application/pdf", _.kebabCase(_.trim(moment().format("YYYYMMDD"))) + "-" +_ .trim("prevention",this.api.crypto().randomUuid())) + ".pdf" )
   }
 
   _selectedCarePathTypeChanged(){

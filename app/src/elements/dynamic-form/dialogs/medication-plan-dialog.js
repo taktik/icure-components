@@ -840,6 +840,9 @@ class MedicationPlanDialog extends TkLocalizerMixin(PolymerElement) {
                                 <div class="td" style="flex-grow: 2;">
 
                                 </div>
+                                <div class="td" style="flex-grow: 2;">
+
+                                </div>
                                 <div class="td" style="flex-grow: 4;">
 
                                 </div>
@@ -882,6 +885,9 @@ class MedicationPlanDialog extends TkLocalizerMixin(PolymerElement) {
                                     <span>[[localize('mom_after','After',language)]]</span>
                                 </div>
                                 <div class="td" style="flex-grow: 2;">
+                                    <span>[[localize('startDate','Start Date',language)]]</span>
+                                </div>
+                                <div class="td" style="flex-grow: 2;">
                                     <span>[[localize('endDate','End Date',language)]]</span>
                                 </div>
                                 <div class="td td-comments" style="flex-grow: 4; justify-content: space-between;">
@@ -913,11 +919,15 @@ class MedicationPlanDialog extends TkLocalizerMixin(PolymerElement) {
                                     <div class="td"></div>
                                     <div class="td"></div>
                                     <div class="td" style="flex-grow: 2;"></div>
+                                    <div class="td" style="flex-grow: 2;"></div>
                                     <div class="td" style="flex-grow: 4;"></div>
                                 </div>
                                 <template is="dom-repeat" items="[[medicationsWithPosology.meds]]" as="m">
                                 <div class="tr">
                                     <div class="td reimbursed">
+                                       <template is="dom-if" if="[[_isChronic(m.medication)]]">
+                                           <iron-icon id="chronical" icon="vaadin:alarm" style="height: 16px; width: 16px;"></iron-icon>
+                                       </template>
                                         <iron-icon id="reimbursedStatus" icon="icons:euro-symbol" class\$="reimbursed-status [[_hasValidChap4Class(m.medication)]]"></iron-icon>
                                         <paper-tooltip for="reimbursedStatus">[[_chap4Status(m.medication)]]</paper-tooltip>
                                     </div>
@@ -970,6 +980,7 @@ class MedicationPlanDialog extends TkLocalizerMixin(PolymerElement) {
                                             </span>
                                         </div>
                                     </template>
+                                    <div class="td" style="flex-grow: 2;"><span>[[_getMedicationOpeningDate(m.medication)]]</span></div>
                                     <div class="td" style="flex-grow: 2;"><span>[[_getMedicationClosingDate(m.medication)]]</span></div>
                                     <div class="td td--comments" style="flex-grow: 4;"><span class="left">[[m.medication.instructionForPatient]]</span></div>
                                 </div>
@@ -1637,7 +1648,8 @@ class MedicationPlanDialog extends TkLocalizerMixin(PolymerElement) {
               "letter" : _.get(med, 'letter', null),
               "meds" : _.uniq(_.concat(_.get(med, 'meds', []), _.get(presc, 'meds', []))).filter(med => {
                   const closeDate = this._getMedicationClosingDate(med.medication) ? moment(this._getMedicationClosingDate(med.medication),"DD/MM/YYYY") : false
-                  const startDate= this.api.moment(_.get(this.api.contact().medicationValue(med.medication),"beginMoment",parseInt(moment().format("YYYYMMDD"))))
+                  const startDate = this._getMedicationOpeningDate(med.medication) ? moment(this._getMedicationOpeningDate(med.medication),"DD/MM/YYYY") : false
+                  //const startDate= this.api.moment(_.get(this.api.contact().medicationValue(med.medication),"beginMoment",parseInt(moment().format("YYYYMMDD"))))
                   const betweenDate = (this.startDatePresent && moment(this.startDatePresent)) || (this.endDatePresent && moment(this.endDatePresent)) || false
                   if(betweenDate){
                       if(this.startDatePresent && moment(this.startDatePresent) && this.endDatePresent && moment(this.endDatePresent)){
@@ -1801,15 +1813,21 @@ class MedicationPlanDialog extends TkLocalizerMixin(PolymerElement) {
           regimenTable.find(r => r.timeOfDay === col || r.dayPeriod && r.dayPeriod.code === col)
       )
   }
-
-  _getMedicationClosingDate(med){
-      if(med) {
-          const medValue = this.api.contact().medicationValue(med)
-          return this._longDateFormat(medValue && medValue.endMoment, med.closingDate)
-      } else {
-          return ""
-      }
+   _isChronic(med){
+      return !med.closingDate && _.get(med, "tags", []).some(t => t.type === "CD-ITEM" && t.code === "medication");
   }
+
+  _getMedicationOpeningDate(med){
+      if (!med) return "";
+      const medValue = this.api.contact().medicationValue(med)
+       return this._longDateFormat(medValue && medValue.beginMoment, med.openingDate)
+  }
+
+    _getMedicationClosingDate(med){
+      if (!med) return "";
+      const medValue = this.api.contact().medicationValue(med)
+      return this._longDateFormat(medValue && medValue.endMoment, med.closingDate)
+    }
 
   _longDateFormat(date, altDate, altDate2) {
       return (date || altDate || altDate2) && this.api.moment((date || altDate || altDate2)).format('DD/MM/YYYY') || '';

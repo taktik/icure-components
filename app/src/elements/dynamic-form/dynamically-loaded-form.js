@@ -759,10 +759,10 @@ class DynamicallyLoadedForm extends TkLocalizerMixin(PolymerElement) {
           }.bind(this),
           setMeasureValue: function (label, value, save = true) {
               const currentValue = self.getMeasureValue(label);
-              if (((!currentValue || !currentValue.value) && !value.value) /* No valid current value and no proposed value */
-                  || (currentValue && value && ((currentValue.value || 0) === (value.value || 0)) && ((currentValue.unit || null) === (value.unit || null)))) {
+              if (!value || !value.value || !value.unit || ((currentValue.value || 0)===(value.value||0) && (currentValue.unit || null) === (value.unit || null))) {
                   return;
               }
+
               self.promoteOrCreateService(label, form.id, null, (this.highlightedHes || []).map(he => he.id), svc => {
                   let c = self.getOrCreateContent(svc, this.language);
                   if (c && c.measureValue !== value) {

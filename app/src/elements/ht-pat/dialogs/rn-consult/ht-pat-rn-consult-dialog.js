@@ -790,7 +790,7 @@ class HtPatRnConsultDialog extends TkLocalizerMixin(mixinBehaviors([IronResizabl
           this.api.patient().modifyPatientWithUser(this.user, this.patient)
           .then(p => this.api.register(p,'patient'))
           .then(p => {
-             this.dispatchEvent(new CustomEvent("patient-saved", {bubbles: true, composed: true}))
+              this.dispatchEvent(new CustomEvent("patient-updated", {bubbles: true, composed: true}))
           }).finally(() => {
               this.set('isLoading',false)
               this._importNotificationSuccess()

@@ -487,7 +487,7 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
             }
             #ht-invite-hcp .content{
                 padding: 12px;
-                height : 400px;
+                height : 500px;
             }
             paper-dialog#ht-invite-hcp-user-already-exists{
                 width: 60%;
@@ -590,8 +590,22 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
 
             }
 
+            .mikronoErrorDialog{
+                position: relative;
+                background-color: #fff;
+                height: calc(100% - 45px);
+                width: auto;
+                margin: 0;
+                top: 0;
+                display: flex;
+            }
+
             .errorMikrono{
                 color: var(--app-status-color-nok);
+            }
+
+            .mikronoErrortitle{
+                color: black;
             }
 
             #appointmentsMigrationDialog{
@@ -729,7 +743,7 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
 
         </style>
 
-        <icc-api id="api" host="[[icureUrl]]" fhc-host="[[fhcUrl]]" headers="[[headers]]" credentials="[[credentials]]"></icc-api>
+        <icc-api id="api" host="[[icureUrl]]" fhc-host="[[fhcUrl]]" electron-host="[[electronUrl]]" headers="[[headers]]" credentials="[[credentials]]"></icc-api>
 
         <paper-item id="noehealth" class="notification-panel noehealth">[[localize('no_ehe_con','No Ehealth connection ',language)]]
             <iron-icon icon="icons:warning"></iron-icon>
@@ -949,8 +963,16 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
                 <paper-input class="inviteHcpInput" label="[[localize('las_nam','Last name',language)]]" value="{{lastName}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('fir_nam','First name',language)]]" value="{{firstName}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('ema','Email',language)]]" value="{{email}}"></paper-input>
+                <paper-input class="inviteHcpInput" label="[[localize('phone','Phone',language)]]" value="{{phone}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('inami','NIHII',language)]]" value="{{nihii}}"></paper-input>
                 <paper-input class="inviteHcpInput" label="[[localize('ssin','SSIN',language)]]" value="{{ssin}}"></paper-input>
+                <paper-dropdown-menu label="[[localize('language','language',language)]]" selected-item="{{lang}}">
+                    <paper-listbox slot="dropdown-content" class="dropdown-content">
+                        <paper-item id="fr">[[localize('fre','French',language)]]</paper-item>
+                        <paper-item id="en">[[localize('eng','English',language)]]</paper-item>
+                        <paper-item id="nl">[[localize('dut','Deutch',language)]]</paper-item>
+                    </paper-listbox>
+                </paper-dropdown-menu>
             </div>
             <div class="buttons">
                 <span class="warn">[[warn]]</span>
@@ -1010,21 +1032,22 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
         </paper-item>
 
         <paper-dialog id="mikronoErrorDialog">
-            <h2 class="modal-title">Erreur lors de la création de votre compte agenda</h2>
-            <div class="content">
-                <div class="errorMikrono">
-                    <template is="dom-if" if="[[!mikronoError.addresses]]"><h5>- Adresse manquante</h5></template>
-                    <template is="dom-if" if="[[!mikronoError.workAddresses]]"><h5>- Adresse de type travail manquante</h5></template>
-                    <template is="dom-if" if="[[!mikronoError.workMobile]]"><h5>- N° de gsm manquant</h5></template>
-                    <template is="dom-if" if="[[!mikronoError.workEmail]]"><h5>- Email manquant</h5></template>
-                    <template is="dom-if" if="[[!mikronoError.token]]"><h5>- Token manquant</h5></template>
-                    <template is="dom-if" if="[[!mikronoError.error]]"><h5>- Erreur lors de la création du compte</h5></template>
-                </div>
-            </div>
-            <div class="buttons">
-                <paper-button dialog-dismiss="">[[localize('clo','Close',language)]]</paper-button>
-            </div>
-        </paper-dialog>
+            <div class="mikronoErrorDialog">
+                 <div class="errorMikrono">
+                     <h3 class="mikronoErrortitle">[[localize('mik-err-title', 'Error when creating your diary', language)]]</h3>
+                     <template is="dom-if" if="[[!mikronoError.addresses]]"><h5>- [[localize('mik-err-adr', 'Addresse is invalid', language)]]</h5></template>
+                     <template is="dom-if" if="[[!mikronoError.workAddresses]]"><h5>- [[localize('mik-err-adr-work', 'Work addresse is invalid', language)]]</h5></template>
+                     <template is="dom-if" if="[[!mikronoError.workMobile]]"><h5>- [[localize('mik-err-gsm', 'Gsm number is invalid', language)]]</h5></template>
+                     <template is="dom-if" if="[[!mikronoError.workEmail]]"><h5>- [[localize('mik-err-mail', 'Email is invalid', language)]]</h5></template>
+                     <template is="dom-if" if="[[!mikronoError.token]]"><h5>- [[localize('mik-err-token', 'Token is invalid', language)]]</h5></template>
+                     <template is="dom-if" if="[[!mikronoError.error]]"><h5>- [[localize('mik-err-crea', 'Error when creating your account', language)]]</h5></template>
+                 </div>
+              </div>
+              <div class="buttons">
+                 <paper-button class="button button--other" dialog-dismiss>[[localize('clo','Close',language)]]</paper-button>
+              </div>
+         </paper-dialog>
+
 
 
         <paper-dialog id="appointmentsMigrationDialog">
@@ -1374,7 +1397,20 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
               type : Boolean,
               value : false
           },
-      }
+          electronUrl: {
+               type: String
+          },
+          mikronoProxy: {
+              type: String
+          },
+          phone:{
+              type: String
+          },
+          lang:{
+              type: String
+          }
+
+  }
   }
 
   static get observers() {
@@ -1425,6 +1461,8 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
       const params = this.route.__queryParams //_.fromPairs((this.route.path.split('?')[1] || "").split('&').map(p => p.split('=')))
       this.set('icureUrl', params.icureUrl || `https://backendb.svc.icure.cloud/rest/v1`)//`https://backend${window.location.href.replace(/https?:\/\/.+?(b?)\.icure\.cloud.*/,'$1')}.svc.icure.cloud/rest/v1`)
       this.set('fhcUrl', params.fhcUrl || (window.location.href.includes('https://tzb') ? 'https://fhctz.icure.cloud' : 'https://fhctz.icure.cloud'))
+      this.set('electronUrl', params.electronUrl || 'http://127.0.0.1:16042');
+      this.set('mikronoProxy', params.mikronoProxy || 'http://127.0.0.1:16041');
 
       this.set('defaultIcureUrl', this.icureUrl)
       this.set('defaultFhcUrl', this.fhcUrl)
@@ -1485,7 +1523,7 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
       this.api && this.api.isElectronAvailable().then(electron => {
           this.set("isElectron",electron)
           if (electron) {
-              this.set("socket",io('http://localhost:16042'))
+             this.set("socket",io(this.electronUrl))
 
               this.socket.on("connect", () => {
                   console.log("connection avec le socket de electron")
@@ -1888,7 +1926,7 @@ class HtAppTz extends TkLocalizerMixin(PolymerElement) {
           .then(hcp => hcp.parentId ? this.$.api.hcparty().getHealthcareParty(hcp.parentId) : hcp)
           .then(hcpMH => {
               this.set('hasMHCertificate', hcpMH && this.api.keystoreIdMH)
-              return this.$.api.fhc().Stscontroller().requestTokenUsingGET(this.credentials.ehpasswordMH, hcpMH.nihii.substr(0, 8), this.api.keystoreIdMH, true).then(res => {
+              return this.$.api.fhc().Stscontroller().requestTokenUsingGET(this.credentials.ehpasswordMH, hcpMH && hcpMH.nihii ? hcpMH.nihii.substr(0, 8) : "", this.api.keystoreIdMH, true).then(res => {
                   if(this.root.getElementById('eHealthMHStatus')) this.root.getElementById('eHealthMHStatus').classList.remove('pending')
                   if(this.root.getElementById('eHealthMHStatus')) this.root.getElementById('eHealthMHStatus').classList.remove('disconnected')
                   !_.isEmpty(res) ? this.root.getElementById('eHealthMHStatus') ? this.root.getElementById('eHealthMHStatus').classList.add('connected') : null : this.root.getElementById('eHealthMHStatus').classList.add('disconnected')

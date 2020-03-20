@@ -394,7 +394,7 @@ class HtPatHubDiaryNoteView extends TkLocalizerMixin(mixinBehaviors([IronResizab
                     <vaadin-checkbox checked="{{filters.woundcare}}" id="woundcare" on-tap="_filterCheckChanged">[[localize('cd-diary-woundcare', 'Woundcare', language)]]</vaadin-checkbox>
                 </div>
             </div>
-            <template is="dom-repeat" items="[[transactionOfDiaryNote]]" as="message">
+            <template is="dom-repeat" items="[[availableTransactionOfDiaryNote]]" as="message">
                 <div class="hub-doc">
                     <div class="hub-doc-title">
                         <iron-icon icon="vaadin:newspaper" class="iron-icon"></iron-icon>[[dateFormatTitle(message.transaction.recorddatetime)]]
@@ -764,22 +764,25 @@ class HtPatHubDiaryNoteView extends TkLocalizerMixin(mixinBehaviors([IronResizab
           filters:{
               type: Object,
               value: {
-                  antibiotherapy: false,
-                  diabetes: false,
-                  medication: false,
-                  movement: false,
-                  nutrition: false,
-                  oncology: false,
-                  renalinsufficiency: false,
-                  woundcare: false
+                  antibiotherapy: true,
+                  diabetes: true,
+                  medication: true,
+                  movement: true,
+                  nutrition: true,
+                  oncology: true,
+                  renalinsufficiency: true,
+                  woundcare: true
               }
+          },
+          availableTransactionOfDiaryNote:{
+              type: Array,
+              value: () => []
           }
-
       };
   }
 
   static get observers() {
-      return ['apiReady(api,user,opened)', '_getDiaryNote(api, transactionOfDiaryNote)', '_filterChanged(filters, filters.*)'];
+      return ['apiReady(api,user,opened, transactionOfDiaryNote)', '_getDiaryNote(api, transactionOfDiaryNote)', '_filterChanged(filters, filters.*)'];
   }
 
   ready() {
@@ -856,6 +859,7 @@ class HtPatHubDiaryNoteView extends TkLocalizerMixin(mixinBehaviors([IronResizab
   apiReady() {
       if (!this.api || !this.user || !this.user.id || !this.opened) return;
       this.set('isLoading',true);
+      this.set('availableTransactionOfDiaryNote', _.get(this, 'transactionOfDiaryNote', []))
       try {
       } catch (e) {
           console.log(e);
@@ -1166,6 +1170,7 @@ class HtPatHubDiaryNoteView extends TkLocalizerMixin(mixinBehaviors([IronResizab
 
   _getDiaryNote(){
       console.log(this.transactionOfDiaryNote)
+      this.set('availableTransactionOfDiaryNote', _.get(this, 'transactionOfDiaryNote', []))
       _.size(_.get(this, 'transactionOfDiaryNote', [])) > 0 ?  this.set('isLoading',false) : this.set('isLoading',true)
   }
 
@@ -1177,8 +1182,11 @@ class HtPatHubDiaryNoteView extends TkLocalizerMixin(mixinBehaviors([IronResizab
 
   _filterChanged(){
       console.log(this.transactionOfDiaryNote)
-      //_.get(this, 'transactionOfDiaryNote', []).filter(t => _.get(t, 'transaction.cds', []).find(cd => _.get(cd, 's', null) === "CD-DIARY" && _.get(cd, 'value', null) === key))
-  }
+      let transactionFiltered = []
+      _.map(this.filters, (value, key) => {
+          value ? transactionFiltered = _.concat(transactionFiltered, _.get(this, 'transactionOfDiaryNote', []).filter(t => _.get(t, 'transaction.cds', []).find(cd => _.get(cd, 's', null) === "CD-DIARY" && _.get(cd, 'value', null) === key))) : null
+      })
+      this.set('availableTransactionOfDiaryNote', _.uniqBy(transactionFiltered, 'header.ids[0].value'))  }
 
   _getDiaryType(message){
       return _.get(message, 'transaction.cds', []).filter(cd => _.get(cd, 's', null) === "CD-DIARY")

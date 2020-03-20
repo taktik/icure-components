@@ -32,7 +32,7 @@
 								"labelPosition" : "Left",
 								"width" : 100,
 								"multiline" : false,
-								"left" : 308,
+								"left" : 408,
 								"top" : 33,
 								"pattern": ":ssin",
 								"key" : "StringEditor"
@@ -359,7 +359,7 @@
 								"labelPosition" : "Left",
 								"width" : 685,
 								"multiline" : false,
-								"left" : 477,
+								"left" : 300,
 								"top" : 34,
 								"key" : "StringEditor"
 							},
@@ -420,6 +420,56 @@
 							"subForm" : false,
 							"type" : "TKBoolean",
 							"name" : "active"
+						},
+						{
+							"editor" : {
+								"readOnly" : true,
+								"height" : 22,
+								"labelPosition" : "Left",
+								"width" : 119,
+								"multiline" : false,
+								"fullDateMode" : true,
+								"left" : 190,
+								"top" : 170,
+								"key" : "DateTimeEditor"
+							},
+							"sortOrder" : 1465333559,
+							"codeTypes" : [
+							],
+							"label" : "dat-eid-read",
+							"subForm" : false,
+							"type" : "TKDate",
+							"name" : "lastTimeEidRead"
+						},
+						{
+							"editor" : {
+								"readOnly" : false,
+								"height" : 20,
+								"menuOptions" : [
+									"deceased",
+									"moved",
+									"other_doctor",
+									"retired",
+									"no_contact",
+									"unknown",
+									"none"
+								],
+								"labelPosition" : "Left",
+								"width" : 200,
+								"multiline" : false,
+								"left" : 1242,
+								"top" : 8,
+								"key" : "PopupMenuEditor"
+							},
+							"sortOrder" : 1616336694,
+							"codeTypes" : [
+
+							],
+							"label" : "deact_reason",
+							"irrelevant" : false,
+							"subForm" : false,
+							"type" : "TKString",
+							"name" : "deactivationReason"
 						},
 						{
 							"editor" : {

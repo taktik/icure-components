@@ -1129,6 +1129,7 @@ class HtPatAdminTeam extends TkLocalizerMixin(PolymerElement) {
   }
   _showExternalTeamSelector(){
       this.$['externalCareTeamDialog'].open()
+      this.shadowRoot.querySelector('#newHcp')._clear() || false
   }
   _addHcpToInternalTeam(){
       let pPromise = Promise.resolve([])
@@ -1241,10 +1242,7 @@ class HtPatAdminTeam extends TkLocalizerMixin(PolymerElement) {
               .then(patient => this.api.register(patient, 'patient'))
               .finally(() => {
                   this.$['dmg-owner-list'].clearCache()
-                  this.$['externalCareTeamDialog'].close()
                   this.set('newHcpCareTeam', {})
-                  this.shadowRoot.querySelector('#newHcp')._clear() || false
-                  this.shadowRoot.querySelector('#type-To')._clear() || false
                   this.shadowRoot.querySelector('#hcpSpeciality')._clear() || false
               }).catch(e => console.log("Error: "+e))
       }

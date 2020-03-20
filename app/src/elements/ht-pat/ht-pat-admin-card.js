@@ -19,6 +19,7 @@ import './ht-pat-admin-team.js';
 
 import moment from 'moment/src/moment';
 import levenshtein from 'js-levenshtein';
+import _ from 'lodash/lodash';
 
 import {PolymerElement, html} from '@polymer/polymer';
 import {TkLocalizerMixin} from "../tk-localizer";
@@ -553,7 +554,7 @@ class HtPatAdminCard extends TkLocalizerMixin(PolymerElement) {
                     <paper-tab class="adm-tab"><iron-icon class="smaller" icon="vaadin:family"></iron-icon>[[localize('adm_ctc_per','Contact persons',language)]]</paper-tab>
                     <paper-tab class="adm-tab"><iron-icon class="smaller" icon="vaadin:doctor"></iron-icon>[[localize('adm_h_t','Care team',language)]]</paper-tab>
                     <paper-tab class="adm-tab"><iron-icon class="smaller" icon="vaadin:edit"></iron-icon>[[localize('adm_post_it','Post-it',language)]]</paper-tab>
-<!--                    <paper-tab class="adm-tab"><iron-icon class="smaller" icon="timeline"></iron-icon>[[localize('mh_timeline','Timeline',language)]]</paper-tab>-->
+                    <paper-tab class="adm-tab"><iron-icon class="smaller" icon="timeline"></iron-icon>[[localize('mh_timeline','Timeline',language)]]</paper-tab>
                 </paper-tabs>
                 <div class="buttons">
                     <paper-icon-button class="button--icon-btn" id="print-vignette" icon="av:recent-actors" on-tap="printMutualVignette"></paper-icon-button>
@@ -1803,7 +1804,7 @@ class HtPatAdminCard extends TkLocalizerMixin(PolymerElement) {
 
   fillWithCard(){
       this.set('cardData', null);
-      fetch('http://127.0.0.1:16042/read')
+      fetch(`${_.get(this,"api.electronHost","http://127.0.0.1:16042")}/read`)
           .then((response) => {
               return response.json();
           })
@@ -1858,6 +1859,7 @@ class HtPatAdminCard extends TkLocalizerMixin(PolymerElement) {
 
           this.set("patient.lastName", this.cardData.surname)
           this.set("patient.firstName", this.cardData.firstName)
+          this.set("patient.lastTimeEidRead",parseInt(moment().format('YYYYMMDD')))
           this.set("patient.placeOfBirth", this.cardData.locationOfBirth)
           this.set("patient.dateOfBirth", parseInt(this.api.moment(this.cardData.dateOfBirth * 1000).format('YYYYMMDD')))
           this.set("patient.nationality", this.cardData.nationality)

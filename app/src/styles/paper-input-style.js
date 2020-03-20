@@ -48,7 +48,11 @@ $_documentContainer.innerHTML = `<dom-module id="paper-input-style">
 					border-radius: 0 3px 0 0;
 					height: 22px;
 					line-height: 20px;
-				}
+				};
+
+                --paper-input-container-label: {
+                    z-index: 2;
+                };
 			}
 
 

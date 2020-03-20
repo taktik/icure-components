@@ -342,6 +342,7 @@ class HtPatPreventiveActsDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
                 <p class="error">[[error]]</p>
                 <paper-button class="button" on-tap="_closeDialogs"><iron-icon icon="icons:close" class="mr5 smallIcon"></iron-icon>[[localize('clo','Close',language)]]</paper-button>
                 <paper-button class="button button--other" on-tap="_print"><iron-icon icon="vaadin:print" class="mr5 smallIcon"></iron-icon> [[localize('print','Print',language)]]</paper-button>
+                <paper-button class="button button--other" on-tap="_delete">[[localize('del','Delete',language)]]</paper-button>
                 <paper-button class="button button--save" autofocus="" on-tap="_save" disabled="[[!changed]]">[[localize('save','Save',language)]]</paper-button>
             </div>
         </paper-dialog>
@@ -443,7 +444,7 @@ class HtPatPreventiveActsDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
           this.reset()
           return;
       }
-      this.api.contact().filterServices(this.contacts,s => s.label==='Actes' || (s.tags.some(t => t.type == "SOAP" && t.code == "Plan") && s.tags.some(t => t.type == 'CD-ITEM-TASK')))
+      this.api.contact().filterServices(this.contacts, s => s.label==='Actes' || s.tags.some(t => t.type == "CD-ITEM" && t.code == "vaccine") || (s.tags.some(t => t.type == "SOAP" && t.code == "Plan") && s.tags.some(t => t.type == 'CD-ITEM-TASK')))
           .then(services =>{
               this._services = services;
               this._filter();
@@ -814,6 +815,21 @@ class HtPatPreventiveActsDialog extends TkLocalizerMixin(mixinBehaviors([IronRes
               </body>
           </html>
       `
+  }
+
+  _delete() {
+      this.dispatchEvent(new CustomEvent("delete-service", {
+          detail: {
+              service: this.selectedItem,
+              caller: this,
+          },
+          bubbles: true,
+          composed: true
+      }))
+  }
+
+  delete() {
+      this.$['detail'].delete();
   }
 }
 customElements.define(HtPatPreventiveActsDialog.is, HtPatPreventiveActsDialog);

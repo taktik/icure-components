@@ -1,11 +1,12 @@
-import '../../../ht-spinner/ht-spinner.js';
-import _ from 'lodash/lodash';
+import '../../../ht-spinner/ht-spinner.js'
+import _ from 'lodash/lodash'
 
-import {PolymerElement, html} from '@polymer/polymer';
-import {TkLocalizerMixin} from "../../../tk-localizer";
+import {PolymerElement, html} from '@polymer/polymer'
+import {TkLocalizerMixin} from "../../../tk-localizer"
+
 class HtPatVaccineHistory extends TkLocalizerMixin(PolymerElement) {
-  static get template() {
-    return html`
+    static get template() {
+        return html`
         <style include="dialog-style">
             #dialog {
                 height: 60vh;
@@ -128,7 +129,7 @@ class HtPatVaccineHistory extends TkLocalizerMixin(PolymerElement) {
             <vaadin-grid id="vaccines" class="material" items="[[getVaccines(refresher)]]" active-item="{{vaccine}}">
                 <vaadin-grid-column flex-grow="0" width="100px">
                     <template class="header">
-                        <vaadin-grid-sorter path="date">[[localize('dat','Date',language)]]
+                        <vaadin-grid-sorter path="time">[[localize('dat','Date',language)]]
                         </vaadin-grid-sorter>
                     </template>
                     <template>
@@ -201,192 +202,204 @@ class HtPatVaccineHistory extends TkLocalizerMixin(PolymerElement) {
             </paper-listbox>
             -->
         </div>
-`;
-  }
+`
+    }
 
-  static get is() {
-      return 'ht-pat-vaccine-history';
-  }
+    static get is() {
+        return 'ht-pat-vaccine-history'
+    }
 
-  static get properties() {
-      return {
-          api: {
-              type: Object
-          },
-          user: {
-              type: Object
-          },
-          language: {
-              type: String
-          },
-          contacts: {
-              type: Array,
-              value: null
-          },
-          vaccines: {
-              type: Array,
-              value: []
-          },
-          refresher: {
-              type: Number,
-              value: 0
-          },
-      }
-  }
+    static get properties() {
+        return {
+            api: {
+                type: Object
+            },
+            user: {
+                type: Object
+            },
+            language: {
+                type: String
+            },
+            contacts: {
+                type: Array,
+                value: null
+            },
+            vaccines: {
+                type: Array,
+                value: []
+            },
+            refresher: {
+                type: Number,
+                value: 0
+            },
+        }
+    }
 
-  static get observers() {
-      return [
-      ]
-  }
+    static get observers() {
+        return []
+    }
 
-  constructor() {
-      super();
-  }
+    constructor() {
+        super()
+    }
 
-  ready() {
-      super.ready();
-  }
+    ready() {
+        super.ready()
+    }
 
-  initialize(schemas, services) {
-      console.log("ht-pat-vaccine-history: initialize", this.contacts)
-      this._schemas = schemas;
-      let vaccines = services.map(svc => {
-          return {
-              id: svc.id,
-              date: svc.valueDate,
-              code: _.get(this._getCode(svc), 'code', null),
-              name: this._getName(svc),
-              color: this._getColor(svc),
-              status: this._getStatus(svc),
-              product: this._getProduct(svc),
-              service: svc,
-              dateAsString: this._getDate(svc),
-          }
-      });
-      this.set("vaccines", _.orderBy(vaccines, ['date', 'date'], ['code','code']))
-      this.set("refresher", this.refresher + 1);
-  }
+    initialize(schemas, services) {
+        console.log("ht-pat-vaccine-history: initialize", this.contacts)
+        this._schemas = schemas
+        let vaccines = services.map(svc => this._newVaccine(svc))
+        this.set("vaccines", _.orderBy(vaccines, ['time', 'time'], ['code', 'code']))
+        this.set("refresher", this.refresher + 1)
+    }
 
-  updateService(detail) {
-      const service = "service" in detail ? detail.service : detail.period.service;
-      const vaccine = this.vaccines.find(v => v.id == service.id);
-      if (!vaccine) return;
-      vaccine.date = service.valueDate;
-      vaccine.color = this._getColor(service);
-      vaccine.status = this._getStatus(service);
-      vaccine.product = this._getProduct(service);
-      vaccine.dateAsString = this._getDate(service);
-      this.set("refresher", this.refresher + 1);
-      //this.shadowRoot.querySelector('#products').render();
-  }
+    _newVaccine(svc) {
+        return {
+            id: svc.id,
+            date: svc.valueDate,
+            code: _.get(this._getCode(svc), 'code', null),
+            name: this._getName(svc),
+            time: this._getTime(svc),
+            color: this._getColor(svc),
+            status: this._getStatus(svc),
+            product: this._getProduct(svc),
+            service: svc,
+            dateAsString: this._getDate(svc),
+        }
+    }
 
-  getValue(value) {
-      return value;
-  }
 
-  getVaccines() {
-      return this.vaccines;
-  }
+    updateService(detail) {
+        const service = "service" in detail ? detail.service : detail.period.service
+        const vaccine = this.vaccines.find(v => v.id == service.id)
+        if (!vaccine) return
+        vaccine.date = service.valueDate
+        vaccine.time = this._getTime(service)
+        vaccine.color = this._getColor(service)
+        vaccine.status = this._getStatus(service)
+        vaccine.product = this._getProduct(service)
+        vaccine.dateAsString = this._getDate(service)
+        this.set("refresher", this.refresher + 1)
+        //this.shadowRoot.querySelector('#products').render();
+    }
 
-  _formatDate(date) {
-      return this.api.moment(date).format("DD/MM/YYYY")
-  }
+    getValue(value) {
+        return value
+    }
 
-  _getDate(svc) {
-      return this._formatDate(svc.valueDate);
-  }
+    getVaccines() {
+        return this.vaccines
+    }
 
-  _getCode(svc) {
-      return svc.codes.find(c => c.type == "BE-THESAURUS-PROCEDURES");
-  }
+    _formatDate(date) {
+        return this.api.moment(date).format("DD/MM/YYYY")
+    }
 
-  _getName(svc) {
-      const code = this._getCode(svc);
-      if (code) {
-          const procedure = this._schemas['fr'].procedures.find(p => p.id == code.id);
-          if (procedure)
-              return procedure.label[this.language];
-      }
-      return _.get(this._getContent(svc), "stringValue", "unknown");
-  }
+    _getDate(svc) {
+        return this._formatDate(svc.valueDate)
+    }
 
-  _getColor(svc) {
-      const status = this._getStatus(svc);
-      if (status == "error" || status == "refused" || status == "aborded" || status == "aborted" || status == "cancelled")
-          return "red";
-      if (status == "pending" || status == "planned" || status == "proposed")
-          return "orange";
-      return "green";
-  }
+    _getTime(svc) {
+        return svc && svc.valueDate ? this.api.moment(svc.valueDate).format("x") : null
+    }
 
-  _getStatus(svc)
-  {
-      return _.get(svc.tags.find(t => t.type === "CD-LIFECYCLE"), "code", "");
-  }
+    _getCode(svc) {
+        return svc.codes.find(c => c.type == "BE-THESAURUS-PROCEDURES")
+    }
 
-  _getProduct(svc) {
-      const content = this._getContent(svc);
-      if (content &&
-          content.medicationValue &&
-          content.medicationValue.medicinalProduct &&
-          content.medicationValue.medicinalProduct.intendedname)
-          return content.medicationValue.medicinalProduct.intendedname;
-      return svc.comment ? svc.comment : this.localize('not_specified', 'n/a', this.language)
-  }
+    _getName(svc) {
+        const code = this._getCode(svc)
+        if (code) {
+            const procedure = this._schemas['fr'].procedures.find(p => p.id == code.id)
+            if (procedure)
+                return procedure.label[this.language]
+        }
+        return _.get(this._getContent(svc), "stringValue", "unknown")
+    }
 
-  _getContent(svc) {
-      return svc && this.api.contact().preferredContent(svc, this.language) || svc.content[this.language]
-  }
+    _getColor(svc) {
+        const status = this._getStatus(svc)
+        if (status == "error" || status == "refused" || status == "aborded" || status == "aborted" || status == "cancelled")
+            return "red"
+        if (status == "pending" || status == "planned" || status == "proposed")
+            return "orange"
+        return "green"
+    }
 
-  _formatStatus(code) {
-      return this.localize("proc_status_" + code, code, this.language)
-  }
+    _getStatus(svc) {
+        return _.get(svc.tags.find(t => t.type === "CD-LIFECYCLE"), "code", "")
+    }
 
-  onActionChanged(detail) {
-      this.updateService(detail)
-      this.dispatchEvent(new CustomEvent('update-service', {
-          detail: detail
-      }));
-  }
+    _getProduct(svc) {
+        const content = this._getContent(svc)
+        if (content &&
+            content.medicationValue &&
+            content.medicationValue.medicinalProduct &&
+            content.medicationValue.medicinalProduct.intendedname)
+            return content.medicationValue.medicinalProduct.intendedname
+        return svc.comment ? svc.comment : this.localize('not_specified', 'n/a', this.language)
+    }
 
-  showAction(e){
-      const vaccine = this.vaccines.find(v => v.id == e.currentTarget.id);
-      const contact = this.contacts.find(c => c.id == vaccine.service.contactId);
-      this.dispatchEvent(new CustomEvent('open-action', {
-          detail: {
-              caller: this,
-              source: "history",
-              contact: contact,
-              service: vaccine.service
-          }
-      }));
-  }
+    _getContent(svc) {
+        return svc && this.api.contact().preferredContent(svc, this.language) || svc.content[this.language]
+    }
 
-  print() {
-      let html = '';
-      html += '<div class="history">';
+    _formatStatus(code) {
+        return this.localize("proc_status_" + code, code, this.language)
+    }
 
-      html += '<div class="history-line">';
-      html += '<div class="history-header w100"><div class="pad">' + this.localize("dat", "Date") + '</div></div>';
-      html += '<div class="history-header w100"><div class="pad">' + this.localize("cod", "Code") + '</div></div>';
-      html += '<div class="history-header w400"><div class="pad">' + this.localize("nam", "Name") + '</div></div>';
-      html += '<div class="history-header w300"><div class="pad">' + this.localize("pro", "Product") + '</div></div>';
-      html += '<div class="history-header w150"><div class="pad">' + this.localize("sta", "Status") + '</div></div>';
-      html += '</div>';
+    onActionChanged(detail) {
+        if (detail.clone) {
+            this.push("vaccines", this._newVaccine(detail.clone))
+            this.set("vaccines", _.orderBy(this.vaccines, ['time', 'time'], ['code', 'code']))
+            this.set("refresher", this.refresher + 1)
+        }
+        this.updateService(detail)
+        this.dispatchEvent(new CustomEvent('update-service', {
+            detail: detail
+        }))
+    }
 
-      this.vaccines.forEach(vaccine => {
-          html += '<div class="history-line">';
-          html += '<div class="history-column w100"><div class="pad">' + vaccine.dateAsString + '</div></div>';
-          html += '<div class="history-column w100"><div class="pad">' + vaccine.code + '</div></div>';
-          html += '<div class="history-column w400"><div class="pad">' + vaccine.name + '</div></div>';
-          html += '<div class="history-column w300"><div class="pad">' + vaccine.product + '</div></div>';
-          html += '<div class="history-column w150"><div class="pad">' + this._formatStatus(vaccine.status) + '</div></div>';
-          html += '</div>';
-      })
+    showAction(e) {
+        const vaccine = this.vaccines.find(v => v.id == e.currentTarget.id)
+        const contact = this.contacts.find(c => c.id == vaccine.service.contactId)
+        this.dispatchEvent(new CustomEvent('open-action', {
+            detail: {
+                caller: this,
+                source: "history",
+                contact: contact,
+                service: vaccine.service
+            }
+        }))
+    }
 
-      html += '</div>';
-      return html;
-  }
+    print() {
+        let html = ''
+        html += '<div class="history">'
+
+        html += '<div class="history-line">'
+        html += '<div class="history-header w100"><div class="pad">' + this.localize("dat", "Date") + '</div></div>'
+        html += '<div class="history-header w100"><div class="pad">' + this.localize("cod", "Code") + '</div></div>'
+        html += '<div class="history-header w400"><div class="pad">' + this.localize("nam", "Name") + '</div></div>'
+        html += '<div class="history-header w300"><div class="pad">' + this.localize("pro", "Product") + '</div></div>'
+        html += '<div class="history-header w150"><div class="pad">' + this.localize("sta", "Status") + '</div></div>'
+        html += '</div>'
+
+        this.vaccines.forEach(vaccine => {
+            html += '<div class="history-line">'
+            html += '<div class="history-column w100"><div class="pad">' + vaccine.dateAsString + '</div></div>'
+            html += '<div class="history-column w100"><div class="pad">' + vaccine.code + '</div></div>'
+            html += '<div class="history-column w400"><div class="pad">' + vaccine.name + '</div></div>'
+            html += '<div class="history-column w300"><div class="pad">' + vaccine.product + '</div></div>'
+            html += '<div class="history-column w150"><div class="pad">' + this._formatStatus(vaccine.status) + '</div></div>'
+            html += '</div>'
+        })
+
+        html += '</div>'
+        return html
+    }
 }
 
-customElements.define(HtPatVaccineHistory.is, HtPatVaccineHistory);
+customElements.define(HtPatVaccineHistory.is, HtPatVaccineHistory)

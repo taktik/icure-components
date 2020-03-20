@@ -391,13 +391,13 @@ class HtMsgImportDocDialog extends TkLocalizerMixin(PolymerElement) {
 
   _hasElectronChanged(){
       if(!this.hasElectron)return;
-      Promise.all([fetch("http://localhost:16042/scanning",{
+      Promise.all([fetch("http://127.0.0.1:16042/scanning",{
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
               request : "list"
           })
-      }), fetch('http://localhost:16042/getPrinterSetting', {
+      }), fetch('http://127.0.0.1:16042/getPrinterSetting', {
           method: "POST",
           headers: {
               "Content-Type": "application/json; charset=utf-8"
@@ -557,7 +557,7 @@ class HtMsgImportDocDialog extends TkLocalizerMixin(PolymerElement) {
   }
 
   _launchScan(){
-      fetch("http://localhost:16042/scanning",{
+      fetch("http://127.0.0.1:16042/scanning",{
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({

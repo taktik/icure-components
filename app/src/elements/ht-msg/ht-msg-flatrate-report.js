@@ -13,6 +13,8 @@ import '../ht-pat/dialogs/medicalhouse/ht-pat-flatrate-utils.js';
 import moment from 'moment/src/moment';
 import _ from 'lodash/lodash';
 import * as models from 'icc-api/dist/icc-api/model/models'
+import XLSX from 'xlsx'
+import 'xlsx/dist/shim.min'
 
 import promiseLimit from 'promise-limit';
 
@@ -29,6 +31,7 @@ import "@vaadin/vaadin-grid/vaadin-grid-sorter"
 import {PolymerElement, html} from '@polymer/polymer';
 import {TkLocalizerMixin} from "../tk-localizer";
 class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
+
   static get template() {
     return html`
         <custom-style>
@@ -1014,7 +1017,7 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
             </style>
         </custom-style>
 
-        <div class="invoice-panel">
+        <div id="mypanel" class="invoice-panel">
 <!--            <template is="dom-if" if="[[_isLoading]]">-->
 <!--                <div id="loadingContainer">-->
 <!--                    <div id="loadingContentContainer">-->
@@ -1043,10 +1046,13 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                         <paper-tab class="adm-tab" on-tap="contractPage"><iron-icon class="smaller tabIcon" icon="vaadin:family"></iron-icon>[[localize('fr_par_err_mhc','MH Contract',language)]]</paper-tab>
                         <paper-tab class="adm-tab" on-tap="insurabilityPage"><iron-icon class="smaller tabIcon" icon="vaadin:family"></iron-icon>[[localize('fr_par_err_ins','Insurability',language)]]</paper-tab>
                         <paper-tab class="adm-tab" on-tap="geninsPage"><iron-icon class="smaller tabIcon" icon="vaadin:umbrella"></iron-icon>[[localize('fr_par_err_ins_mcn','Insurability by MyCareNet',language)]]</paper-tab>
+                        <paper-tab class="adm-tab" on-tap="datesPage"><iron-icon class="smaller tabIcon" icon="vaadin:umbrella"></iron-icon>[[localize('fr_pat_dates','Dates',language)]]</paper-tab>
                     </paper-tabs>
                     <div class="buttons">
                         <paper-icon-button class="button--icon-btn" id="refreshFRCheck" on-tap="_runFlatRateCheck" icon="vaadin:refresh"></paper-icon-button>
-                        <paper-tooltip for="print-vignette" position="left">[[localize('flatrate-gen-report','Generate report',language)]]</paper-tooltip>
+                        <paper-tooltip for="refreshFRCheck" position="left">[[localize('flatrate-gen-report','Generate report',language)]]</paper-tooltip>
+                        <paper-icon-button class="button--icon-btn" id="exportXLSX" on-tap="_exportXLSX" icon="icons:cloud-download"></paper-icon-button>
+                        <paper-tooltip for="exportXLSX" position="left">[[localize('export-excel','Export to xlsx',language)]]</paper-tooltip>
                     </div>
                 </div>
                 <div class="searchbox">
@@ -1057,9 +1063,9 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                         <div class="page-container">
                             <div class="invoicesGridContainer">
                                 <div class="invoiceContainer">
-                                    <div id="errorGridContainer" class="invoiceSubContainerMiddle">
+                                    <div class="invoiceSubContainerMiddle">
                                         <div class="scrollBox">
-                                            <vaadin-grid id="messagesGrid2" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
+                                            <vaadin-grid id="main" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
                                                 <vaadin-grid-column flex-grow="0" width="20%" class="oa-col">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
@@ -1102,9 +1108,9 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                         <div class="page-container">
                             <div class="invoicesGridContainer">
                                 <div class="invoiceContainer">
-                                    <div id="errorGridContainer" class="invoiceSubContainerMiddle">
+                                    <div class="invoiceSubContainerMiddle">
                                         <div class="scrollBox">
-                                            <vaadin-grid id="messagesGrid2" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
+                                            <vaadin-grid id="gender" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
                                                 <vaadin-grid-column flex-grow="0" width="20%" class="oa-col">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
@@ -1147,9 +1153,9 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                         <div class="page-container">
                             <div class="invoicesGridContainer">
                                 <div class="invoiceContainer">
-                                    <div id="errorGridContainer" class="invoiceSubContainerMiddle">
+                                    <div class="invoiceSubContainerMiddle">
                                         <div class="scrollBox">
-                                            <vaadin-grid id="messagesGrid2" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
+                                            <vaadin-grid id="deceased" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
                                                 <vaadin-grid-column flex-grow="0" width="20%" class="oa-col">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
@@ -1192,9 +1198,9 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                         <div class="page-container">
                             <div class="invoicesGridContainer">
                                 <div class="invoiceContainer">
-                                    <div id="errorGridContainer" class="invoiceSubContainerMiddle">
+                                    <div class="invoiceSubContainerMiddle">
                                         <div class="scrollBox">
-                                            <vaadin-grid id="messagesGrid2" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
+                                            <vaadin-grid id="contract" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
                                                 <vaadin-grid-column flex-grow="0" width="20%" class="oa-col">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
@@ -1237,9 +1243,9 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                         <div class="page-container">
                             <div class="invoicesGridContainer">
                                 <div class="invoiceContainer">
-                                    <div id="errorGridContainer" class="invoiceSubContainerMiddle">
+                                    <div class="invoiceSubContainerMiddle">
                                         <div class="scrollBox">
-                                            <vaadin-grid id="messagesGrid2" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
+                                            <vaadin-grid id="insurability" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
                                                 <vaadin-grid-column flex-grow="0" width="20%" class="oa-col">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
@@ -1278,13 +1284,13 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                             </div>
                         </div>
                     </page>
-                    <page>
+                    <page><!--genins-mcn-->
 <!--                        <paper-icon-button class="button&#45;&#45;icon-btn" id="refreshFRCheck" on-tap="_checkAssurabilityInformation" icon="vaadin:refresh"></paper-icon-button>-->
                         <div class="invoicesGridContainer">
                             <div class="invoiceContainer">
-                                <div id="errorGridContainer" class="invoiceSubContainerMiddle">
+                                <div class="invoiceSubContainerMiddle">
                                     <div class="scrollBox">
-                                        <vaadin-grid id="messagesGrid2" items="[[geninsResList]]" active-item="{{activeGridItem}}">
+                                        <vaadin-grid id="mcn" items="[[geninsResList]]" active-item="{{activeGridItem}}">
                                             <vaadin-grid-column flex-grow="0" width="20%" class="oa-col">
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
@@ -1317,6 +1323,80 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
                                                 <template><paper-icon-button class="button--icon-btn" id="openPatient" data-id\$="[[item.pat.id]]" on-tap="openPatient" icon="vaadin:edit">Open</paper-icon-button></template>
                                             </vaadin-grid-column>
                                         </vaadin-grid>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </page>
+                    <page><!--dates-->
+                        <div class="page-container">
+                            <div class="invoicesGridContainer">
+                                <div class="invoiceContainer">
+                                    <div class="invoiceSubContainerMiddle">
+                                        <div class="scrollBox">
+                                            <vaadin-grid id="info" items="[[flatRateCheckListView]]" active-item="{{activeGridItem}}">
+                                                <vaadin-grid-column flex-grow="0" width="15%" class="oa-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="pat.lastName">[[localize('pat','Patient',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.pat.lastName]] [[item.pat.firstName]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="ref-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="pat.ssin">[[localize('niss','Niss',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.pat.ssin]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="flatrateInfo.ABON">[[localize('ABON','ABON',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.ABON]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="flatrateInfo.MUT">[[localize('MUT','MUT',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.MUT]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="flatrateInfo.CT12">[[localize('tc1','CT1',language)]]/[[localize('tc2','CT2',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.CT12]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="flatrateInfo.DINS">[[localize('sub_start_date','DINS',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.DINS]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="item.flatrateInfo.DFAC">[[localize('cov_start_date','DFAC',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.DFAC]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="item.flatrateInfo.DDES">[[localize('sub_end_date','DDES',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.DDES]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="item.flatrateInfo.DFIN">[[localize('cov_end_date','DFIN',language)]]</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>[[item.flatrateInfo.DFIN]]</template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column flex-grow="0" width="10%" class="invoice-col">
+                                                    <template class="header">
+                                                        [[localize('open_pat','Open',language)]]
+                                                    </template>
+                                                    <template><paper-icon-button class="button--icon-btn" id="openPatient" data-id$="[[item.pat.id]]" on-tap="openPatient" icon="vaadin:edit">Open</paper-icon-button></template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1382,7 +1462,7 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
           },
           flatrateMenuSection: {
               type: String,
-              observer: '_flatRateListingMenuSectionChanged'
+              value: null
           },
           activeGridItem:{
               type: Object,
@@ -1539,38 +1619,6 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
       if(!this._isLoading) this._resetLoadingMessage();
   }
 
-  _flatRateListingMenuSectionChanged() {
-
-      this.set('_isLoading', false );
-      this.set('_isLoadingSmall', false );
-
-      this.set('activeGridItem', null );
-      this.set('messageDetailsData', null );
-      this.set('messagesGridData', [] );
-      this.set('messagesGridDataReset', [] );
-
-      if( this.flatrateMenuSection === "archivej3" ) { this._getListingArchives(); return; }
-
-      if( ['j20_process', 'j20_reject', 'j20_accept', 'j20_partiallyAccepted', 'j20_archive', 'j20_toBeCorrected', 'j20_reset'].indexOf(_.trim(this.flatrateMenuSection)) > -1  ) {
-
-          // Close when opened + unset objects & reset detail grid
-          this._toggleBatchDetails();
-
-          if(!!_.size(this.messagesCachedData.dataByStatus)) {
-              this.set("messagesGridData", this._getBatchDataByMenuSection(this.flatrateMenuSection, 'flatFiles'))
-              this.set("messagesGridDataReset", _.get(this, "messagesCachedData.dataByStatus.reset.flatFiles", []))
-              const messagesGrid = this.root.querySelector('#messagesGrid'); messagesGrid && messagesGrid.clearCache();
-              const messagesGrid2 = this.root.querySelector('#messagesGrid2'); messagesGrid2 && messagesGrid2.clearCache();
-              const messagesGrid3 = this.root.querySelector('#messagesGrid3'); messagesGrid3 && messagesGrid3.clearCache();
-              const invGridDetail = this.root.querySelector('#invoiceAndBatchesGridDetail'); invGridDetail && invGridDetail.clearCache();
-          } else {
-              this._fetchJ20Messages();
-          }
-
-      }
-
-  }
-
   formatDate(d,f) {
       const input = d.toString()
       const yyyy = input.slice(0,4), mm = input.slice(4,6), dd = input.slice(6,8)
@@ -1626,22 +1674,6 @@ class HtMsgFlatrateReport extends TkLocalizerMixin(PolymerElement) {
 
   _getBatchStatusByMenuSection(menuSection) {
       return _.get( _.filter(_.toPairs(this.invoiceMessageStatuses), i=>_.trim(_.get(i, "[1].menuSection")) === _.trim(menuSection) ), "[0][0]", [] )
-  }
-
-  _getInsuranceTitularyInfo(inputPatientsList=false) {
-      return new Promise(resolve =>{
-          const insuranceTitularyIds = _.compact(_.uniq(_.filter( (inputPatientsList?inputPatientsList:this.flatRateAllPatients), (i)=>{ return _.trim(_.get(i, "titularyId", "")) }).map(i=>i.titularyId) ));
-          return !_.size(insuranceTitularyIds) ? resolve((inputPatientsList?inputPatientsList:this.flatRateAllPatients)) : this.api.patient().getPatientsWithUser(this.user, new models.ListOfIdsDto({ ids: insuranceTitularyIds })).then(results => {
-              return resolve(
-                  _.map((inputPatientsList?inputPatientsList:this.flatRateAllPatients), (i=>{
-                      if(!_.trim(_.get(i,"titularyId", "" ))) return i
-                      let titularyRecord = _.head(_.filter(results,(j=>{ return _.trim(j.id) === _.get(i,"titularyId", "" ) })))
-                      i.titularyLabel = _.upperCase(_.get(titularyRecord, "firstName", "" )) + ' ' + _.upperCase(_.get(titularyRecord, "lastName", "" ))
-                      return i
-                  }))
-              )
-          })
-      })
   }
 
   _setLoadingMessage( messageData ) {

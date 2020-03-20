@@ -8,8 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 import './reports/ht-admin-reports-list-of-attestations.js';
-
 import './reports/ht-admin-reports-age-structure.js';
+import './reports/ht-admin-reports-rash'
 
 import moment from 'moment/src/moment';
 import _ from 'lodash/lodash';
@@ -46,6 +46,10 @@ class HtAdminReports extends TkLocalizerMixin(PolymerElement) {
                 z-index: 25;
             }
 
+            #admin-reports-rash{
+                height: calc(100% - 50px);
+            }
+
 
         </style>
 
@@ -55,6 +59,10 @@ class HtAdminReports extends TkLocalizerMixin(PolymerElement) {
         <template is="dom-if" if="[[ageStructure]]">
             <ht-admin-reports-age-structure id="admin-reports-age-structure" api="[[api]]" i18n="[[i18n]]" language="[[language]]" resources="[[resources]]" user="[[user]]"></ht-admin-reports-age-structure>
         </template>
+        <template is="dom-if" if="[[rashReport]]">            
+               <ht-admin-reports-rash id="admin-reports-rash" api="[[api]]" i18n="[[i18n]]" language="[[language]]" resources="[[resources]]" user="[[user]]"></ht-admin-reports-rash>        
+        </template>
+
 `;
   }
 
@@ -81,6 +89,10 @@ class HtAdminReports extends TkLocalizerMixin(PolymerElement) {
               value: false
           },
           ageStructure: {
+              type: Boolean,
+              value: false
+          },
+          rashReport:{
               type: Boolean,
               value: false
           },
@@ -114,6 +126,7 @@ class HtAdminReports extends TkLocalizerMixin(PolymerElement) {
   _selectedReportsSubMenuChanged(){
       this.set('listOfAttestationLayout', this.selectedSubMenu === "listOfAttestationSubMenu");
       this.set('ageStructure', this.selectedSubMenu === "ageStructure");
+      this.set('rashReport', this.selectedSubMenu === "rashReport");
   }
 }
 

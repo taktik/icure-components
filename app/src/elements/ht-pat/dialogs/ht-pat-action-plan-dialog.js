@@ -91,6 +91,9 @@ class HtPatActionPlanDialog extends TkLocalizerMixin(mixinBehaviors([IronResizab
             <div class="buttons">
                 <p class="error">[[error]]</p>
                 <paper-button class="button" dialog-dismiss="">[[localize('can','Cancel',language)]]</paper-button>
+                 <template is="dom-if" if="[[exist]]">
+                     <paper-button class="button button--other" on-tap="_delete">[[localize('del','Delete',language)]]</paper-button>
+                 </template>
                 <paper-button class="button button--save" autofocus="" on-tap="_save" disabled="[[!isValid]]"><iron-icon icon="save"></iron-icon>[[localize('save','Save',language)]]</paper-button>
             </div>
         </paper-dialog>
@@ -150,6 +153,10 @@ class HtPatActionPlanDialog extends TkLocalizerMixin(mixinBehaviors([IronResizab
               type: Boolean,
               value : false
           },
+          exist: {
+              type: Boolean,
+              value: false
+          }
       };
   }
 
@@ -181,11 +188,29 @@ class HtPatActionPlanDialog extends TkLocalizerMixin(mixinBehaviors([IronResizab
 
   open(service, readonly, detail) {
       this.shadowRoot.querySelector("#detail").open(service, readonly, detail);
+      this.set("service", service);
       this.set("opened", true);
+      this.set("exist", _.get(service, "id", null) != null);
   }
 
   _save() {
       this.shadowRoot.querySelector("#detail").planAction();
+      this.close();
+  }
+
+  _delete() {
+      this.dispatchEvent(new CustomEvent("delete-service", {
+          detail: {
+              service: this.service,
+              caller: this,
+          },
+          bubbles: true,
+          composed: true
+      }))
+  }
+
+  delete() {
+      this.shadowRoot.querySelector("#detail").delete();
       this.close();
   }
 

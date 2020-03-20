@@ -1,5 +1,57 @@
 {
   "updates": [
+      {
+        "version": "0.0.372",
+        "updateDate": "2020-01-21",
+        "startDate" : "2020-01-21",
+        "endDate" : "2020-02-28",
+        "mainType" : "News",
+        "mainTitle" : "Labellisation 2019",
+        "mainLink" : null,
+        "modules" : [
+          {
+            "type" : {},
+            "areaCode" : {
+              "fr" : ""
+            },
+            "title" : {
+              "fr" : "Labellisation 2019"
+
+            },
+            "description": {
+              "fr": "En 2019, topaz a passé toute une série de tests afin d’obtenir la <b>labellisation INAMI</b> permettant d’octroyer la <b>prime de pratique intégrée en médecine générale.</b></br> Nous sommes très heureux de vous annoncer officiellement que nous avons <b>franchi toutes les étapes avec succès.</b><br/> Bravo à toute l’équipe engagée à 100% chaque jour dans ce projet, et merci à tous ceux qui soutiennent topaz depuis le début. Voilà une belle étape de franchie ! A présent, nous continuons de concentrer toute notre énergie dans notre logiciel pour vous offrir une plateforme répondant aux attentes de chacun.<br/>Merci de votre confiance,<br/><br/> N’hésitez pas à contacter notre support si vous rencontrez des difficultés.<br/><br/>Gaëtan DE LAEVER<br/>Coordinateur général<br/><br/><i>PS: Une question, un conseil, adressez-vous à notre support par mail: <a href='mailto:support@topaz.care'>support@topaz.care</a>  ou par téléphone au 02/319.22.41 du lundi au vendredi de8h à 20h et le samedi de 9h à 13h.</i>"
+            },
+            "images" : [],
+            "links" : []
+          }
+        ]
+      },
+	  {
+		  "version": "0.0.372",
+		  "updateDate": "2020-01-21",
+		  "startDate" : "2020-01-21",
+		  "endDate" : "2020-02-28",
+		  "mainType" : "News",
+		  "mainTitle" : "Labellisation 2019",
+		  "mainLink" : null,
+		  "modules" : [
+			  {
+				  "type" : {},
+				  "areaCode" : {
+					  "fr" : ""
+				  },
+				  "title" : {
+					  "fr" : "Labellisation 2019"
+
+				  },
+				  "description": {
+					  "fr": "En 2019, topaz a passé toute une série de tests afin d’obtenir la <b>labellisation INAMI</b> permettant d’octroyer la <b>prime de pratique intégrée en médecine générale.</b></br> Nous sommes très heureux de vous annoncer officiellement que nous avons <b>franchi toutes les étapes avec succès.</b><br/> Bravo à toute l’équipe engagée à 100% chaque jour dans ce projet, et merci à tous ceux qui soutiennent topaz depuis le début. Voilà une belle étape de franchie ! A présent, nous continuons de concentrer toute notre énergie dans notre logiciel pour vous offrir une plateforme répondant aux attentes de chacun.<br/>Merci de votre confiance,<br/><br/> N’hésitez pas à contacter notre support si vous rencontrez des difficultés.<br/><br/>Gaëtan DE LAEVER<br/>Coordinateur général<br/><br/><i>PS: Une question, un conseil, adressez-vous à notre support par mail: <a href='mailto:support@topaz.care'>support@topaz.care</a>  ou par téléphone au 02/319.22.41 du lundi au vendredi de8h à 20h et le samedi de 9h à 13h.</i>"
+				  },
+				  "images" : [],
+				  "links" : []
+			  }
+		  ]
+	  },
 	  {
 		  "version": "0.0.347",
 		  "updateDate": "2019-12-03",

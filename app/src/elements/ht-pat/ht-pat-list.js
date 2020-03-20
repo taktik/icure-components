@@ -1741,7 +1741,7 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
               value: [
                   {name: {fr: "Prévention mammotest", nl: "Mammotest", en: "Mammotest"}, type: 'breastCancer', filter: {searchString: '((gender == "female") & age>50y & age<69y & active == true) - SVC[ICPC == X76 - :CD-CERTAINTY == excluded] - HE[ICPC == X76 - :CD-CERTAINTY == excluded] - SVC[BE-THESAURUS-PROCEDURES == X41.004{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)] - SVC[BE-THESAURUS-PROCEDURES == X41.006{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)] - SVC[BE-THESAURUS-PROCEDURES == X41.007{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)] - SVC[BE-THESAURUS-PROCEDURES == X41.008{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)] - SVC[BE-THESAURUS-PROCEDURES == X41.009{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)] - SVC[BE-THESAURUS-PROCEDURES == X41.010{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)] - SVC[BE-THESAURUS-PROCEDURES == X41.011{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)]'}},
                   {name: {fr: "Prévention cancer colo-rectal", nl: "Colorectale kanker", en: "Colorectal cancer"}, type:"colorectalCancer", filter: {searchString: '((gender == "female" | gender == "male") & active == true & (age>50y & age<74y)) - SVC[ICPC == D75 - :CD-CERTAINTY == excluded] - HE[ICPC == D75 - :CD-CERTAINTY == excluded] - SVC[BE-THESAURUS-PROCEDURES == D40.001{<5y} & :CD-LIFECYCLE == completed] - SVC[BE-THESAURUS-PROCEDURES == D36.002{<2y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)]'}},
-                  {name: {fr: "Prévention frottis de col", nl: "Kraag uitstrijkje", en: "Collar smear"}, type: 'collarSmear', filter: {searchString: '(gender=="female" & (age>25y & age<65y) & active == true) - SVC[ICPC == X75 - :CD-CERTAINTY == excluded] - HE[ICPC == X75 - :CD-CERTAINTY == excluded] - SVC[BE-THESAURUS-PROCEDURES == X37.003{<3y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed) | :CD-LIFECYCLE == refused] - SVC[BE-THESAURUS-PROCEDURES == X37.002{<3y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)]'}},
+                  {name: {fr: "Prévention frottis de col", nl: "Kraag uitstrijkje", en: "Collar smear"}, type: 'collarSmear', filter: {searchString: '(gender=="female" & (age>25y & age<65y) & active == true) - SVC[ICPC == X75 - :CD-CERTAINTY == excluded] - HE[ICPC == X75 - :CD-CERTAINTY == excluded] - SVC[BE-THESAURUS-PROCEDURES == X52.002 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X52.003 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X52.004 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X52.005 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X52.006 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X59.002 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X59.003 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X59.004 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-PROCEDURES == X59.005 & (:CD-LIFECYCLE == completed)] - SVC[BE-THESAURUS-SURGICAL-PROCEDURES == 369] - SVC[BE-THESAURUS-SURGICAL-PROCEDURES == 367] - SVC[BE-THESAURUS-SURGICAL-PROCEDURES == 368] - SVC[BE-THESAURUS-SURGICAL-PROCEDURES == 525] - SVC[BE-THESAURUS-SURGICAL-PROCEDURES == 522] - SVC[BE-THESAURUS-PROCEDURES == X37.003{<3y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed) | :CD-LIFECYCLE == refused] - SVC[BE-THESAURUS-PROCEDURES == X37.002{<3y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)]'}},
                   {name :{fr: "Vaccination grippe", nl: "", en:"Vaccine again influenza"}, type: 'influenza', filter: {searchString: '((age>65y & active == true) | SVC[ICPC == W78 - :CD-CERTAINTY == excluded] | HE[ICPC == W78 - :CD-CERTAINTY == excluded] | SVC[ICPC == W79 - :CD-CERTAINTY == excluded] | HE[ICPC == W79 - :CD-CERTAINTY == excluded] | SVC[ICPC == W29 - :CD-CERTAINTY == excluded] | HE[ICPC == W29 - :CD-CERTAINTY == excluded] | SVC[ICPC == W84 - :CD-CERTAINTY == excluded] | HE[ICPC == W84 - :CD-CERTAINTY == excluded] | SVC[ICPC == T90 - :CD-CERTAINTY == excluded] | HE[ICPC == T90 - :CD-CERTAINTY == excluded] | SVC[ICPC == T89 - :CD-CERTAINTY == excluded] | HE[ICPC == T89 - :CD-CERTAINTY == excluded]| SVC[ICPC == R95 - :CD-CERTAINTY == excluded]) | HE[ICPC == R95 - :CD-CERTAINTY == excluded] - SVC[BE-THESAURUS-PROCEDURES == R44.003{<1y} & (:CD-LIFECYCLE == completed | :CD-LIFECYCLE == aborted | :CD-LIFECYCLE == cancelled | :CD-LIFECYCLE == proposed | :CD-LIFECYCLE == refused)]'}}
                   //{name: {fr: "Patients avec sumehr", nl: "Patiënten met sumehr", en: "Patients with sumehr"}, type: 'withSumEHR', filter: {searchString: 'active == true & SVC[:CD-TRANSACTION == "sumehr"]'}},
                   //{name: {fr: "Patients sans sumehr", nl: "Patiënten zonder sumehr", en: "Patients without sumehr"}, type: 'withoutSumEHR', filter: {searchString: 'active == true - SVC[:CD-TRANSACTION == "sumehr"]'}},
@@ -2113,7 +2113,7 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
   }
 
   _readEid() {
-      fetch('http://127.0.0.1:16042/read')
+      fetch(`${_.get(this,"api.electronHost","http://127.0.0.1:16042")}/read`)
           .then((response) => {
               return response.json()
           })
@@ -2191,6 +2191,10 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
       })
   }
 
+  _capitalize(value) {
+      return value && value.length > 0 ? value[0].toUpperCase() + value.slice(1) : value;
+  }
+
   _exportXlsFromPatientDataProviderFunction(dataProviderFun) {
 
       // Data mapping
@@ -2200,6 +2204,7 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
           "firstName",
           "dateOfBirth",
           "phone",
+          "fax",
           "postalAddress",
           "email",
           "ssin",
@@ -2214,6 +2219,7 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
           this.localize('fir_nam', 'First name', this.language),
           this.localize('birthDate', 'Birthdate', this.language),
           this.localize('phone', 'Phone number', this.language),
+          this._capitalize(this.localize('fax', 'Fax number', this.language)),
           this.localize('postalAddress', 'Address', this.language),
           this.localize('email', 'Email address', this.language),
           this.localize('ssin', 'SSIN', this.language),
@@ -2234,6 +2240,7 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
           items.forEach(item => {
               item.dateOfBirth = item.dateOfBirth ? ("" + item.dateOfBirth).replace(/([0-9]{4})([0-9]{2})([0-9]{2})/, '$3/$2/$1') : this.localize('na_short', 'N/A')
               item.phone = this._getPhone(item)
+              item.fax = this._getFax(item)
               item.genderText = this.localize(item.gender, 'no translation', this.language)
           })
 
@@ -3247,7 +3254,7 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
       // Must click on a row
       if ((e.path || e.composedPath())[0].nodeName === 'TABLE') return
       console.log(e.target.dataset.item)
-      fetch('http://127.0.0.1:16042/getPatient', {
+      fetch(`${_.get(this,"api.electronHost","http://127.0.0.1:16042")}/getPatient`, {
           method: "POST",
           headers: {
               "Content-Type": "application/json; charset=utf-8"
@@ -3282,9 +3289,13 @@ class HtPatList extends TkLocalizerMixin(PolymerElement) {
       }
  }
 
-  _getPhone(item){
-    return ((item.addresses.find(add => add.telecoms.find(tel=> tel.telecomType==="mobile" || tel.telecomType==="phone"))|| {telecoms:[]}).telecoms.find(tel=> tel.telecomType==="mobile" || tel.telecomType==="phone")||{telecomNumber:""}).telecomNumber
- }
+ _getPhone(item){
+      return ((item.addresses.find(add => add.telecoms.find(tel=> tel.telecomType==="mobile" || tel.telecomType==="phone"))|| {telecoms:[]}).telecoms.find(tel=> tel.telecomType==="mobile" || tel.telecomType==="phone")||{telecomNumber:""}).telecomNumber
+  }
+
+  _getFax(item){
+      return ((item.addresses.find(add => add.telecoms.find(tel=> tel.telecomType==="fax"))|| {telecoms:[]}).telecoms.find(tel=> tel.telecomType==="fax")||{telecomNumber:""}).telecomNumber
+  }
 
   _localizePrevention(name){
       return _.get(name, this.language, null)

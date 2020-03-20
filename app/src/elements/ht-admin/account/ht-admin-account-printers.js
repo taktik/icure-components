@@ -27,6 +27,8 @@ import "@vaadin/vaadin-grid/vaadin-grid-column"
 
 import {PolymerElement, html} from '@polymer/polymer';
 import {TkLocalizerMixin} from "../../tk-localizer";
+import _ from 'lodash/lodash';
+
 class HtAdminAccountPrinters extends TkLocalizerMixin(PolymerElement) {
   static get template() {
     return html`
@@ -403,7 +405,7 @@ class HtAdminAccountPrinters extends TkLocalizerMixin(PolymerElement) {
       this.api.printers()
       .then(prt=>{
           this.set('printers',prt)
-          fetch('http://localhost:16042/getPrinterSetting', {
+          fetch('http://127.0.0.1:16042/getPrinterSetting', {
               method: "POST",
               headers: {
                   "Content-Type": "application/json; charset=utf-8"
@@ -433,7 +435,7 @@ class HtAdminAccountPrinters extends TkLocalizerMixin(PolymerElement) {
               return scanSetting;
           })
           .then(scanSetting => {
-              fetch("http://localhost:16042/scanning",{
+              fetch("http://127.0.0.1:16042/scanning",{
                   method: "POST",
                   headers: {"Content-Type": "application/json"},
                   body: JSON.stringify({request : "list"})
@@ -461,7 +463,7 @@ class HtAdminAccountPrinters extends TkLocalizerMixin(PolymerElement) {
   _savePrinters(){
       const printerSettingComplete = this.listTypeDocument.filter(type => (type.formatSelected || type.formatSelected===0) && (type.printerSelected || type.printerSelected===0))
       .map(x => {return{type:x.type,format : x.formatSelected,printer : x.printerSelected, color: x.color, duplex: x.duplex}})
-      fetch('http://localhost:16042/setPrinterSetting', {
+      fetch('http://127.0.0.1:16042/setPrinterSetting', {
           method: "POST",
           headers: {
               "Content-Type": "application/json; charset=utf-8"
@@ -473,7 +475,7 @@ class HtAdminAccountPrinters extends TkLocalizerMixin(PolymerElement) {
       })
           .then(answer=>{
               answer = typeof answer === 'string' ? JSON.parse(_.trim(answer))||{} : answer
-              if(!!_.get(answer,"ok", false)) { setTimeout(() => this.$.savedIndicator.classList.remove("saved"), 2000); this.$.savedIndicator.classList.add("saved"); }
+              if(!!_.get(answer,"ok", false)) { setTimeout(() => this.shadowRoot.querySelector('savedIndicator') ? this.shadowRoot.querySelector('savedIndicator').classList.remove("saved") : null, 2000); this.shadowRoot.querySelector('savedIndicator') ? this.shadowRoot.querySelector('savedIndicator').classList.add("saved") : null; }
           })
           .catch(error=>{ console.log("NOT SAVED"); })
   }

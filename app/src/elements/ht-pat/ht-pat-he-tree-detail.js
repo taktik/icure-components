@@ -479,6 +479,10 @@ class HtPatHeTreeDetail extends TkLocalizerMixin(PolymerElement) {
           hcp: {
               type: Object,
               value: () => {}
+          },
+          familyLinks: {
+              type: Array,
+              value: () => []
           }
       };
   }
@@ -654,9 +658,20 @@ class HtPatHeTreeDetail extends TkLocalizerMixin(PolymerElement) {
 
   }
 
-  _getLabel(he){
-      return he.descr
+    _getLabel(he){
+      const familyLink = this._getFamilyLink(he);
+      return !familyLink ? he.descr : he.descr + " (" + familyLink + ")";
   }
+
+    _getFamilyLink(he) {
+      const link = _.get(he, 'codes', []).find(c => c.type === "BE-FAMILY-LINK")
+        if (link) {
+            const familyLink = this.familyLinks.find(c => c.code === link.code);
+            if (familyLink && familyLink.label)
+                return _.get(familyLink.label, this.language, _.get(familyLink.label, 'fr', null));
+        }
+        return "";
+    }
 
   _isExcluded(he){
       return _.get(he, 'tags', []).find(t => t.type === "CD-CERTAINTY" && t.code === "excluded") ? "exclude" : null

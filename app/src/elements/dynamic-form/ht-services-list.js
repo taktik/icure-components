@@ -154,14 +154,14 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
             <div class\$="textContainer [[additionalCssClasses]]">
                 <template is="dom-repeat" items="[[_services(contacts,contacts.*)]]" as="item">
 
-                    <template is="dom-if" if="[[_any(printable,forwardable)]]">
+                    <template is="dom-if" if="[[_any(printable,forwardable,allowEsLink,allowEditLabelAndTransaction,allowDeletion)]]">
                         <div class="documentHeader">
                             <span></span>
                             <div>
+
+                                <template is="dom-if" if="[[allowEsLink]]"><dynamic-pills health-elements="[[_selectedHes(healthElements.*, contact.subContacts.*)]]" on-unlink-to-health-element="_unlinkDoc"></dynamic-pills></template>
+
                                 <template is="dom-if" if="[[_isContactLabResultOrProtocol(contacts)]]">
-
-                                    <template is="dom-if" if="[[allowEsLink]]"><dynamic-pills health-elements="[[_selectedHes(healthElements.*, contact.subContacts.*)]]" on-unlink-to-health-element="_unlinkDoc"></dynamic-pills></template>
-
                                     <template is="dom-if" if="[[_documentId(contacts)]]">
                                         <paper-icon-button icon="file-download" on-tap="_triggerDownload" data-document-id\$="[[_documentId(contacts)]]" class="button--icon-btn" id="downloadFile-1"></paper-icon-button>
                                         <paper-tooltip for="downloadFile-1" position="left">[[localize('dl','Download',language)]]</paper-tooltip>
@@ -171,6 +171,7 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
                                         <paper-tooltip for="printDocument" position="left">[[localize('pri','Print',language)]]</paper-tooltip>
                                     </template>
                                 </template>
+
                                 <template is="dom-if" if="[[forwardable]]">
                                     <template is="dom-if" if="[[_documentId(contacts)]]">
                                         <paper-icon-button on-tap="_forwardDocument" data-document-id\$="[[_documentId(contacts)]]" class="button--icon-btn" id="forwardDocument" icon="forward"></paper-icon-button>
@@ -179,17 +180,18 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
                                 </template>
 
                                 <template is="dom-if" if="[[allowEsLink]]">
-                                    <paper-tooltip position="left" for="linkhe">[[localize('link_he','Link Health Element',language)]]</paper-tooltip>
-                                    <paper-menu-button class="" horizontal-align="right" dynamic-align="true" vertical-offset="30">
-                                        <paper-icon-button id="linkhe" class="button--icon-btn" icon="icons:link" slot="dropdown-trigger"></paper-icon-button>
-                                        <paper-listbox slot="dropdown-content">
-                                            <template is="dom-repeat" items="[[linkableHealthElements]]" as="he">
-                                                <template is="dom-if" if="[[he.id]]"><paper-item id="[[he.id]]" class\$="link [[_isExcluded(he)]]" on-tap="_linkDoc"><label class\$="colour-code [[he.colour]]"><span></span></label>[[he.descr]]</paper-item></template>
-                                                <!--<template is="dom-if" if="[[!he.id]]"><paper-item id="[[he.idService]]" class\$="link [[he.colour]]" on-tap="_linkDoc"><label class="colour-code"><span></span></label>[[he.descr]]</paper-item></template>-->
-                                            </template>
-                                        </paper-listbox>
-                                    </paper-menu-button>
+                                     <paper-tooltip position="left" for="linkhe">[[localize('link_he','Link Health Element',language)]]</paper-tooltip>
+                                     <paper-menu-button class="" horizontal-align="right" dynamic-align="true" vertical-offset="30">
+                                         <paper-icon-button id="linkhe" class="button--icon-btn" icon="icons:link" slot="dropdown-trigger"></paper-icon-button>
+                                         <paper-listbox slot="dropdown-content">
+                                             <template is="dom-repeat" items="[[linkableHealthElements]]" as="he">
+                                                 <template is="dom-if" if="[[he.id]]"><paper-item id="[[he.id]]" class$="link [[_isExcluded(he)]]" on-tap="_linkDoc"><label class$="colour-code [[he.colour]]"><span></span></label>[[he.descr]]</paper-item></template>
+                                                 <!--<template is="dom-if" if="[[!he.id]]"><paper-item id="[[he.idService]]" class$="link [[he.colour]]" on-tap="_linkDoc"><label class="colour-code"><span></span></label>[[he.descr]]</paper-item></template>-->
+                                             </template>
+                                         </paper-listbox>
+                                     </paper-menu-button>
                                 </template>
+
 
                                 <template is="dom-if" if="[[allowEditLabelAndTransaction]]">
                                     <paper-icon-button icon="create" on-tap="_editLabelAndTransaction" class="button--icon-btn" id="editLabelAndTransaction"></paper-icon-button>
@@ -197,10 +199,9 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
                                 </template>
 
                                 <template is="dom-if" if="[[allowDeletion]]">
-                                    <paper-icon-button icon="delete" on-tap="_deleteService" class="button--icon-btn" id="deleteService"></paper-icon-button>
+                                    <paper-icon-button icon="delete" on-tap="_deleteService" data-svc-ids$="[[item.id]]" class="button--icon-btn" id="deleteService"></paper-icon-button>
                                     <paper-tooltip for="deleteService" position="left">[[localize('del','Delete',language)]]</paper-tooltip>
                                 </template>
-
                             </div>
                         </div>
                     </template>
@@ -219,7 +220,7 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
 
 
             <template is="dom-if" if="[[!_moreThan1Contact(contacts,contacts.*)]]">
-                <template is="dom-if" if="[[_any(printable,forwardable)]]">
+              <template is="dom-if" if="[[_any(printable,forwardable,allowEsLink,allowEditLabelAndTransaction,allowDeletion)]]">
                     <div class\$="documentHeader margin032 [[additionalCssClasses]]">
                         <span></span>
                         <div>
@@ -291,6 +292,12 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
                             Value
                         </template>
                         <template><span class\$="outofrange-[[_isOutOfRange(item)]]">[[_shortDescription(item)]]</span></template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column flex-grow="4">
+                        <template class="header">
+                            Comment
+                        </template>
+                        <template><span class\$="outofrange-[[_isOutOfRange(item)]]">[[_comment(item)]]</span></template>
                     </vaadin-grid-column>
                     <vaadin-grid-column flex-grow="4">
                         <template class="header">
@@ -411,6 +418,10 @@ class HtServicesList extends TkLocalizerMixin(PolymerElement) {
   _shortDescription(svc) {
       return this.api.contact().shortServiceDescription(svc, this.language);
   }
+
+    _comment(svc){
+      return svc.comment || ""
+    }
 
   _notifyResize() {
       const grid = this.$['dynamic-list']
