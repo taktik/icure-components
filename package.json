@@ -172,7 +172,7 @@
     "mocha": "^5.2.0",
     "moment": "latest",
     "mustache": "^3.2.1",
-    "node-forge": "^0.7.6",
+    "node-forge": "^0.10.0",
     "npm": "^6.13.4",
     "object-keys": "^1.1.1",
     "pdfjs-dist": "^2.2.228",
